@@ -1,0 +1,36 @@
+package mapreduce.etl;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+import java.io.IOException;
+
+/**
+ * @author 连仕杰
+ */
+public class WebLogMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+
+    @Override
+    protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+
+        String line = value.toString();
+
+        boolean result = parseLog(line, context);
+
+        if (!result){
+            return;
+        }
+
+        context.write(value, NullWritable.get());
+    }
+
+    private boolean parseLog(String line, Context context) {
+
+        String[] fields = line.split(" ");
+
+        int ll = 11;
+        return fields.length > ll;
+    }
+}
