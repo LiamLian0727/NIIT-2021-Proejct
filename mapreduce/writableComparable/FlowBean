@@ -71,13 +71,13 @@ public class FlowBean implements WritableComparable<FlowBean> {
     @Override
     public int compareTo(FlowBean o) {
 
-        // 总流量的倒序排序
+        // 倒序排序
         if (this.sumFlow > o.sumFlow) {
             return -1;
         } else if (this.sumFlow < o.sumFlow) {
             return 1;
         } else {
-            // 按照上行流量的正序排
+            // 正序排
             return Long.compare(this.upFlow, o.upFlow);
         }
     }
