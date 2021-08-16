@@ -29,9 +29,9 @@ public class FlowDriver {
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
-
-        FileInputFormat.setInputPaths(job, new Path("D:\\Hadoop\\资料\\资料\\11_input\\inputflow"));
-        FileOutputFormat.setOutputPath(job, new Path("D:\\hadoop\\output4"));
+        
+        FileInputFormat.setInputPaths(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         boolean result = job.waitForCompletion(true);
         System.exit(result ? 0 : 1);
