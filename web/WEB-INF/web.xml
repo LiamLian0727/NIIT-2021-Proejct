@@ -3,14 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-<!-->
+
+    <welcome-file-list>
+        <welcome-file>SignIn.html</welcome-file>
+    </welcome-file-list>
+
     <servlet>
-        <servlet-name></servlet-name>
-        <servlet-class></servlet-class>
+        <servlet-name>SignUp</servlet-name>
+        <servlet-class>servlet.SignUp</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name></servlet-name>
-        <url-pattern></url-pattern>
+        <servlet-name>SignUp</servlet-name>
+        <url-pattern>/SignUp</url-pattern>
     </servlet-mapping>
-</-->
+    <servlet>
+        <servlet-name>SignIn</servlet-name>
+        <servlet-class>servlet.SignUp</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SignIn</servlet-name>
+        <url-pattern>/SignIn</url-pattern>
+    </servlet-mapping>
+
 </web-app>
