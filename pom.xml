@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.Group4</groupId>
-    <artifactId>Group4Project</artifactId> <!-- 这里写你project的名字-->
+    <groupId>org.Group4</groupId> <!-- 这里写你的组名，它在创建项目的第二部由你手动确定，默认为org.example -->
+    <artifactId>Group4Project</artifactId> <!-- 这里写你project的名字 -->
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -13,7 +13,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.45</version>
+            <version>5.1.45</version>    <!-- 如果你的MySQL是8.0版本请把这里改成你的对于版本，如果是5.7版本这里不用改（Maven不提供5.1以上的5.x版本） -->
         </dependency>
         <dependency>
             <groupId>junit</groupId>
