@@ -42,7 +42,16 @@
     </style>
 </head>
 
-<body>
+<script>
+    function error(){
+        var errorFromServlet ='<%=request.getParameter("error")%>';
+        if(errorFromServlet=='yes'){
+            alert("Password error!");
+        }
+    }
+</script>
+
+<body onload="error()">
 <h1 style="text-align: center">Sign In</h1>
 <div style="line-height: 30px;">
     <span style="font-family: verdana,serif; ">
@@ -56,9 +65,10 @@
             <input type="button" value="Sign In" type="submit"
                    onclick="sign.action='SignIn';sign.submit();"/>
             <input type="button" value="Sign Up" type="submit"
-                   onclick="sign.action='SignUp.html';sign.submit();"/>
+                   onclick="sign.action='SignUp.jsp';sign.submit();"/>
         </form>
     </span>
 </div>
+
 </body>
 </html>

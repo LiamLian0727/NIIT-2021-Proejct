@@ -5,7 +5,7 @@
          version="4.0">
 
     <welcome-file-list>
-        <welcome-file>SignIn.html</welcome-file>
+        <welcome-file>SignIn.jsp</welcome-file>
     </welcome-file-list>
 
     <servlet>
@@ -18,7 +18,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>SignIn</servlet-name>
-        <servlet-class>servlet.SignUp</servlet-class>
+        <servlet-class>servlet.SignIn</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SignIn</servlet-name>

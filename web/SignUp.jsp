@@ -41,7 +41,19 @@
     </style>
 </head>
 
-<body>
+<script>
+    function error(){
+        let errorFromServlet ='<%=request.getParameter("error")%>';
+        if(errorFromServlet=='notEqual'){
+            alert("Entering the password twice is different!");
+        }else if (errorFromServlet=='hasExit'){
+            alert('The user name already exists')
+        }
+    }
+</script>
+
+<body onload="error()">
+
 <h1 style="text-align: center">Student Registration Form</h1>
 <div style="line-height: 30px;">
     <span style="font-family: verdana,serif; ">
@@ -79,4 +91,6 @@
     </span>
 </div>
 </body>
+
+
 </html>
