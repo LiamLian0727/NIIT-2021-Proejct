@@ -27,17 +27,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>    <!-- 如果你的MySQL是8.0版本请把这里改成你的对于版本，如果是5.7版本这里不用改（Maven不提供5.1以上的5.x版本） -->
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.30</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
