@@ -5,8 +5,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.*;
+
+import static servlet.CreatrConnection.createConnection;
 
 /**
  * @author 连仕杰
@@ -15,14 +16,7 @@ import java.sql.*;
 public class SignIn extends HttpServlet {
 
     ResultSet rs;
-    public Connection createConnection() throws SQLException, ClassNotFoundException {
-        Connection con=null;
-        Class.forName("com.mysql.jdbc.Driver");
-        con= DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/niit?serverTimezone=Asia/Shanghai&characterEncoding=utf-8&useSSL=false",
-                "root","niit1234");
-        return con;
-    }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
