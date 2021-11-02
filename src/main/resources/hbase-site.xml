@@ -38,6 +38,12 @@
     only and __should not be used in production!__
 
     See also https://hbase.apache.org/book.html#standalone_dist
+
+    本配置文件需要根据自己的HBase进行配置：
+    hbase.rootdir：hbase根目录，一般为hdfs://你的ip地址:你的端口号(9000或者其他)/hbase
+    hbase.cluster.distributed:如果是伪分布式的hadoop这里需要改为false
+    hbase.zookeeper.quorum:改为自己的  ip:2181 
+    hbase.zookeeper.property.dataDir 一般为：zookeeper的根目录/zkData
   -->
   <property>
     <name>hbase.rootdir</name>
