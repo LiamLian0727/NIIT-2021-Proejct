@@ -1,4 +1,4 @@
-package servlet;
+package utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * @author 连仕杰
  */
-public class CreatrConnection {
+public class CreateConnection {
 
     public static Connection createConnection() throws SQLException, ClassNotFoundException {
         Connection con;

@@ -44,9 +44,9 @@
 <script>
     function error(){
         let errorFromServlet ='<%=request.getParameter("error")%>';
-        if(errorFromServlet=='notEqual'){
+        if(errorFromServlet==='notEqual'){
             alert("Entering the password twice is different!");
-        }else if (errorFromServlet=='hasExit'){
+        }else if (errorFromServlet==='hasExit'){
             alert('The user name already exists')
         }
     }

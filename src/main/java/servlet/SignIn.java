@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
 
-import static servlet.CreatrConnection.createConnection;
+import static utils.CreateConnection.createConnection;
 
 /**
  * @author 连仕杰

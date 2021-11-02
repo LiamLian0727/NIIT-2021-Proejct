@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import static servlet.CreatrConnection.createConnection;
+import static utils.CreateConnection.createConnection;
 
 /**
  * @author 连仕杰

@@ -1,7 +1,10 @@
+package utils;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -21,18 +24,20 @@ import java.util.List;
  * 16: budget            17: usa_gross_income     18: worlwide_gross_income      19: metascore
  * 20: reviews_from_users                         21: reviews_from_critics
 */
-public class DataFromCsv {
+public class DataFromCsv{
 
     String[] title;                             Table table;
     Configuration con;                          Connection conn;
-    static int split = 13;                      List<Put> list = new ArrayList<Put>();
+    static int split = 14;                      List<Put> list = new ArrayList<Put>();
     static String tbName = "IMDb";              Admin admin;
     static String[] columnFamily = new String[]{"Info","Data"};
+    static String csvSplitBy =",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
+    int count = 0;
 
 
     public void init() throws IOException {
         con = new Configuration();
-        con.set("hbase.zookeeper.quorum","hadoop102");
+        con.set("hbase.zookeeper.quorum","hadoop102,hadoop103,hadoop104");
         System.setProperty("HADOOP_USER_NAME","hadoop");
         conn = ConnectionFactory.createConnection(con);
         admin = conn.getAdmin();
@@ -51,31 +56,41 @@ public class DataFromCsv {
         admin.close();
     }
 
+    @Test
     public void dataFromCsvToHbase() throws IOException {
 
         init();
         if(!admin.tableExists(TableName.valueOf(tbName))){
             createTable();
         }
+        table = conn.getTable(TableName.valueOf(tbName));
         BufferedReader reader = new BufferedReader(
                 new FileReader("src\\main\\dataset\\IMDb_movies.csv"));
         String line;
         line = reader.readLine();
-        title = line.split(",");
+        title = line.split(csvSplitBy);
         while ((line = reader.readLine()) != null) {
-            String[] item = line.split(",");
+            count++;
+            String[] item = line.split(csvSplitBy);
             Put p = new Put(Bytes.toBytes(item[0]));
-            for (int i = 1 ; i <= split ; i++){
-                p.addColumn(Bytes.toBytes(columnFamily[0]),
-                            Bytes.toBytes(title[i]),
-                            Bytes.toBytes(item[1]));
+            for (int i = 1 ; i < split ; i++){
+                if(!("".equals(item[i]))) {
+                    p.addColumn(Bytes.toBytes(columnFamily[0]),
+                                Bytes.toBytes(title[i]),
+                                Bytes.toBytes(item[i]));
+                }
             }
-            for (int i = split+1 ; i < title.length ; i++){
-                p.addColumn(Bytes.toBytes(columnFamily[1]),
-                        Bytes.toBytes(title[i]),
-                        Bytes.toBytes(item[1]));
+            for (int i = split ; i < item.length ; i++){
+                if(!("".equals(item[i]))) {
+                    p.addColumn(Bytes.toBytes(columnFamily[1]),
+                                Bytes.toBytes(title[i]),
+                                Bytes.toBytes(item[i]));
+                }
             }
             list.add(p);
+            if(count % 10000 == 0 ){
+                System.out.println("========>["+count+"/85855]");
+            }
         }
         table.put(list);
         destroy();

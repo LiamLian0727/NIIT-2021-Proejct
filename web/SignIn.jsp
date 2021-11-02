@@ -14,7 +14,7 @@
             box-sizing: border-box;
         }
 
-        input[type=button] {
+        input[type=submit] {
             width: 40%;
             background-color: #4CAF50;
             color: white;
@@ -44,8 +44,8 @@
 
 <script>
     function error(){
-        var errorFromServlet ='<%=request.getParameter("error")%>';
-        if(errorFromServlet=='yes'){
+        let errorFromServlet ='<%=request.getParameter("error")%>';
+        if(errorFromServlet==='yes'){
             alert("Password error!");
         }
     }
@@ -62,9 +62,9 @@
             <br>Password:        <br>
             <label><input type="password" name="Password"></label>
             <br>
-            <input type="button" value="Sign In" type="submit"
+            <input value="Sign In" type="submit"
                    onclick="sign.action='SignIn';sign.submit();"/>
-            <input type="button" value="Sign Up" type="submit"
+            <input value="Sign Up" type="submit"
                    onclick="sign.action='SignUp.jsp';sign.submit();"/>
         </form>
     </span>
