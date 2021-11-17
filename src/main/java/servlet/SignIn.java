@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
 
-import static utils.CreateConnection.createConnection;
+import static utils.MySqlUtils.createConnection;
 
 /**
  * @author 连仕杰
  */
-@WebServlet(name = "SignIn")
+@WebServlet(urlPatterns = "/SignIn")
 public class SignIn extends HttpServlet {
 
     ResultSet rs;
@@ -20,7 +20,6 @@ public class SignIn extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
         String name=request.getParameter("UserName");
         Connection con= null;
         try {

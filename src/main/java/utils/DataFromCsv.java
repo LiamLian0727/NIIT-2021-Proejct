@@ -4,6 +4,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -11,6 +13,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static utils.HbaseUtils.*;
 
 
 /**
@@ -27,45 +31,27 @@ import java.util.List;
 public class DataFromCsv{
 
     String[] title;                             Table table;
-    Configuration con;                          Connection conn;
+    Connection conn;                            int count = 0;
     static int split = 14;                      List<Put> list = new ArrayList<Put>();
     static String tbName = "IMDb";              Admin admin;
+    Configuration con;
     static String[] columnFamily = new String[]{"Info","Data"};
     static String csvSplitBy =",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    int count = 0;
 
-
-    public void init() throws IOException {
-        con = new Configuration();
-        con.set("hbase.zookeeper.quorum","hadoop102,hadoop103,hadoop104");
-        System.setProperty("HADOOP_USER_NAME","hadoop");
-        conn = ConnectionFactory.createConnection(con);
+    public void begin() throws IOException {
+        con = init();
+        conn = getConnection(con);
         admin = conn.getAdmin();
-    }
-
-    public void createTable() throws IOException {
-        TableDescriptorBuilder tdb = TableDescriptorBuilder.newBuilder(TableName.valueOf(tbName));
-        tdb.setColumnFamily(ColumnFamilyDescriptorBuilder.of(columnFamily[0])).build();
-        tdb.setColumnFamily(ColumnFamilyDescriptorBuilder.of(columnFamily[1])).build();
-        admin.createTable(tdb.build());
-    }
-
-    public void destroy() throws IOException {
-        table.close();
-        conn.close();
-        admin.close();
-    }
-
-    @Test
-    public void dataFromCsvToHbase() throws IOException {
-
-        init();
         if(!admin.tableExists(TableName.valueOf(tbName))){
-            createTable();
+            createTable(tbName,columnFamily,admin);
         }
         table = conn.getTable(TableName.valueOf(tbName));
+    }
+
+    public void dataFromCsvToHbase(String path) throws IOException {
+
         BufferedReader reader = new BufferedReader(
-                new FileReader("src\\main\\dataset\\IMDb_movies.csv"));
+                new FileReader(path));
         String line;
         line = reader.readLine();
         title = line.split(csvSplitBy);
@@ -92,7 +78,25 @@ public class DataFromCsv{
                 System.out.println("========>["+count+"/85855]");
             }
         }
+        System.out.println("Load successful, entering data now");
         table.put(list);
-        destroy();
+    }
+
+    public void destroy() throws IOException {
+        table.close();
+        conn.close();
+        admin.close();
+    }
+
+    public static void main(String[] args) {
+        try {
+            DataFromCsv dataFromCsv = new DataFromCsv();
+            dataFromCsv.begin();
+            dataFromCsv.dataFromCsvToHbase("src/main/dataset/IMDb_movies.csv");
+            dataFromCsv.destroy();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

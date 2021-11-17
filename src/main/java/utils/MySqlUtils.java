@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * @author 连仕杰
  */
-public class CreateConnection {
+public class MySqlUtils {
 
     public static Connection createConnection() throws SQLException, ClassNotFoundException {
         Connection con;

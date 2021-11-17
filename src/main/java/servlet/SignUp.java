@@ -5,12 +5,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import static utils.CreateConnection.createConnection;
+import static utils.MySqlUtils.createConnection;
 
 /**
  * @author 连仕杰
  */
-@WebServlet(name = "SignUp")
+@WebServlet(urlPatterns = "/SignUp")
 public class SignUp extends HttpServlet {
 
     @Override
