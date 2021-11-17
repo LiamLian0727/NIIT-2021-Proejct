@@ -73,6 +73,9 @@ public class AverageScoreMr {
             put.addColumn(Bytes.toBytes("Per_Info"),
                     Bytes.toBytes("averageScore"),
                     Bytes.toBytes(format));
+            put.addColumn(Bytes.toBytes("Per_Info"),
+                    Bytes.toBytes("count"),
+                    Bytes.toBytes(count));
             context.write(null, put);
         }
     }
@@ -85,11 +88,11 @@ public class AverageScoreMr {
         if (!admin.tableExists(TableName.valueOf(targetTable))) {
             createTable(targetTable, new String[]{"Per_Info"}, admin);
         }
-        Job job = new Job(con, "Average Score MR");
+        Job job = Job.getInstance(con);
         job.setJarByClass(AverageScoreMr.class);
 
         Scan scan = new Scan();
-        scan.setCaching(1);
+        scan.setCaching(100);
         scan.setCacheBlocks(false);
 
         /** 测试用

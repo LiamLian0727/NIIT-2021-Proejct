@@ -782,19 +782,7 @@ SELECT|sys.sys_config:null
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="242" parent="238" name="MobileNo">
-      <Position>4</Position>
-      <DataType>varchar(20)|0s</DataType>
-    </column>
-    <column id="243" parent="238" name="Majors">
-      <Position>5</Position>
-      <DataType>varchar(20)|0s</DataType>
-    </column>
-    <column id="244" parent="238" name="Country">
-      <Position>6</Position>
-      <DataType>varchar(20)|0s</DataType>
-    </column>
-    <key id="245" parent="238" name="PRIMARY">
+    <key id="242" parent="238" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>UserName</ColNames>
       <Primary>1</Primary>

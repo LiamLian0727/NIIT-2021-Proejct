@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+
 import static utils.MySqlUtils.createConnection;
 
 /**
@@ -13,41 +14,39 @@ import static utils.MySqlUtils.createConnection;
 @WebServlet(urlPatterns = "/SignUp")
 public class SignUp extends HttpServlet {
 
+    String url = "http://localhost:8080/Group4Project/index.html";
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response){
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
         try {
-            Connection con=createConnection();
-            Statement stmt=con.createStatement();
+            Connection con = createConnection();
+            Statement stmt = con.createStatement();
             String sql;
-
-            boolean equals = request.getParameter("Password").equals(request.getParameter("PasswordAgain"));
-            sql = "SELECT UserName from user where UserName = '" + request.getParameter("UserName") +"'";
+            String name = request.getParameter("UsernameSU");
+            boolean equals = request.getParameter("PasswordSU").equals(request.getParameter("ConfirmPassword"));
+            sql = "SELECT UserName from user where UserName = '" + name + "'";
             ResultSet resultSet = stmt.executeQuery(sql);
             boolean exit = resultSet.next();
-            if( equals && !exit){
-                sql = "insert into niit.user values('" + request.getParameter("UserName") + "','"
-                                                       + request.getParameter("Password") + "','"
-                                                       + request.getParameter("EmailID")  + "','"
-                                                       + request.getParameter("MobileNo") + "','"
-                                                       + request.getParameter("Majors")   + "','"
-                                                       + request.getParameter("Country")  + "')";
+            if (equals && !exit && !"".equals(name)) {
+                sql = "insert into niit.user values('" + request.getParameter("UsernameSU") + "','"
+                        + request.getParameter("PasswordSU") + "','"
+                        + request.getParameter("EmailSU") + "')";
                 stmt.executeUpdate(sql);
-                response.sendRedirect("http://localhost:8080/Group4Project/SignIn.jsp");
+                response.sendRedirect(url + "?error=noError");
+            } else if (!equals) {
+                response.sendRedirect(url + "?error=notEqual");
+            } else if (exit) {
+                response.sendRedirect(url + "?error=hasExit");
+            } else {
+                response.sendRedirect(url + "?error=UsernameNull");
             }
-            else if(!equals){
-                response.sendRedirect("http://localhost:8080/Group4Project/SignUp.jsp?error=notEqual");
-            }else {
-                response.sendRedirect("http://localhost:8080/Group4Project/SignUp.jsp?error=hasExit");
-            }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response){
-        doPost(request,response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        doPost(request, response);
     }
 }
