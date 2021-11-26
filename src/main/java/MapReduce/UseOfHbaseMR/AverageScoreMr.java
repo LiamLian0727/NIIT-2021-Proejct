@@ -1,16 +1,14 @@
 package MapReduce.UseOfHbaseMR;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.TableName;
+
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.mapreduce.TableReducer;
+import utils.HbaseUtils;
 
 import java.io.IOException;
 
@@ -20,31 +18,40 @@ import static utils.HbaseUtils.*;
  * @author 连仕杰
  */
 public class AverageScoreMr {
+    static String csvSplitBy = null;
+    static String[] columnFamily = null;
+    static String typeKey = null;
+    static int countMin = 0;
 
-    static String sourceTable = "IMDb";
-    static String targetTable = "OutAverageScore";
-    static String csvSplitBy = ",";
-    static String[] columnFamily = new String[]{"Info", "Data"};
+
+    static final String NULLVALUE = "N/A";
+
+    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, int countMinSet) {
+        csvSplitBy = csvSplitBySet;
+        columnFamily = columnFamilySet;
+        typeKey = typeKeySet;
+        countMin = countMinSet;
+
+    }
 
     public static class Map extends TableMapper<Text, FloatWritable> {
 
-        public FloatWritable avgVote = new FloatWritable(0);
-        private Text word = new Text("default");
-        String vote, director;
-        float voteFloat;
+        static public FloatWritable avgVote = new FloatWritable(0);
+        static private Text word = new Text("default");
+        static String vote, keyValue;
+        static float voteFloat;
 
         @Override
-        public void map(ImmutableBytesWritable row, Result value, Context context) throws IOException, InterruptedException {
-
-            director = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
-                    Bytes.toBytes("director")));
-            vote =  new String(value.getValue(Bytes.toBytes(columnFamily[1]),
+        protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
+            keyValue = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
+                    Bytes.toBytes(typeKey)));
+            vote = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
                     Bytes.toBytes("avg_vote")));
-            if (director != null && vote != null) {
-                director = director.replaceAll("\"", "");
+            if (!(NULLVALUE.equals(keyValue) || NULLVALUE.equals(vote))) {
+                keyValue = keyValue.replaceAll("\"", "");
                 voteFloat = Float.parseFloat(vote);
                 avgVote.set(voteFloat);
-                for (String s : director.split(csvSplitBy)) {
+                for (String s : keyValue.split(csvSplitBy)) {
                     word.set(s.trim());
                     context.write(word, avgVote);
                 }
@@ -65,58 +72,37 @@ public class AverageScoreMr {
                 count++;
             }
             float averageScore = sum / count;
-            format = String.format("%.3f", averageScore);
-            Put put = new Put(Bytes.toBytes(format + key));
-            put.addColumn(Bytes.toBytes("Per_Info"),
-                    Bytes.toBytes("director"),
-                    Bytes.toBytes(String.valueOf(key)));
-            put.addColumn(Bytes.toBytes("Per_Info"),
-                    Bytes.toBytes("averageScore"),
-                    Bytes.toBytes(format));
-            put.addColumn(Bytes.toBytes("Per_Info"),
-                    Bytes.toBytes("count"),
-                    Bytes.toBytes(count));
-            context.write(null, put);
+            format = String.format("%.3f", 10f - averageScore);
+            if (count >= countMin) {
+                Put put = new Put(Bytes.toBytes(format + key + typeKey));
+                put.addColumn(Bytes.toBytes("Per_Info"),
+                        Bytes.toBytes(typeKey),
+                        Bytes.toBytes(String.valueOf(key)));
+                put.addColumn(Bytes.toBytes("Per_Info"),
+                        Bytes.toBytes("averageScore"),
+                        Bytes.toBytes(format));
+                put.addColumn(Bytes.toBytes("Per_Info"),
+                        Bytes.toBytes("count"),
+                        Bytes.toBytes(count));
+                context.write(null, put);
+            }
         }
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
-        Configuration con = init();
-        Connection conn = getConnection(con);
-        Admin admin = conn.getAdmin();
-        if (!admin.tableExists(TableName.valueOf(targetTable))) {
-            createTable(targetTable, new String[]{"Per_Info"}, admin);
-        }
-        Job job = Job.getInstance(con);
-        job.setJarByClass(AverageScoreMr.class);
-
-        Scan scan = new Scan();
-        scan.setCaching(100);
-        scan.setCacheBlocks(false);
-
-        /** 测试用
-        scan.setStartRow(Bytes.toBytes("tt0000009"));
-        scan.setStopRow(Bytes.toBytes("tt0021492"));
+    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+        /**
+         * actors
+         * or
+         * director
+         * or
+         * production_company
          */
 
-        TableMapReduceUtil.initTableMapperJob(
-                sourceTable,
-                scan,
-                Map.class,
-                Text.class,
-                FloatWritable.class,
-                job);
-
-        TableMapReduceUtil.initTableReducerJob(
-                targetTable,
-                Reduce.class,
-                job);
-
-        conn.close();
-        admin.close();
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
-
-
+        AverageScoreMr.set(",", new String[]{"Info"}, "actors",3);
+        HbaseUtils.jobSubmission(getConnection(init()).getAdmin(), "IMDb",
+                "OutAverageScore",
+                AverageScoreMr.Map.class, AverageScoreMr.Reduce.class,
+                Text.class, FloatWritable.class);
     }
 }

@@ -35,16 +35,18 @@ public class DataFromCsv{
     static int split = 14;                      List<Put> list = new ArrayList<Put>();
     static String tbName = "IMDb";              Admin admin;
     Configuration con;
-    static String[] columnFamily = new String[]{"Info","Data"};
+    static String[] columnFamily = new String[]{"Info"};
     static String csvSplitBy =",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
+    static final String NULLVALUE = "N/A";
 
     public void begin() throws IOException {
         con = init();
         conn = getConnection(con);
         admin = conn.getAdmin();
-        if(!admin.tableExists(TableName.valueOf(tbName))){
-            createTable(tbName,columnFamily,admin);
+        if(isExists(admin,tbName)){
+            dropTable(admin,tbName);
         }
+        createTable(tbName,columnFamily,admin);
         table = conn.getTable(TableName.valueOf(tbName));
     }
 
@@ -58,21 +60,28 @@ public class DataFromCsv{
         while ((line = reader.readLine()) != null) {
             count++;
             String[] item = line.split(csvSplitBy);
+
             Put p = new Put(Bytes.toBytes(item[0]));
-            for (int i = 1 ; i < split ; i++){
-                if(!("".equals(item[i]))) {
+            for (int i = 1 ; i < item.length ; i++){
+                if("".equals(item[i])) {
                     p.addColumn(Bytes.toBytes(columnFamily[0]),
-                                Bytes.toBytes(title[i]),
-                                Bytes.toBytes(item[i]));
+                            Bytes.toBytes(title[i]),
+                            Bytes.toBytes(NULLVALUE));
+                }
+                else {
+                    p.addColumn(Bytes.toBytes(columnFamily[0]),
+                            Bytes.toBytes(title[i]),
+                            Bytes.toBytes(item[i]));
                 }
             }
-            for (int i = split ; i < item.length ; i++){
-                if(!("".equals(item[i]))) {
-                    p.addColumn(Bytes.toBytes(columnFamily[1]),
-                                Bytes.toBytes(title[i]),
-                                Bytes.toBytes(item[i]));
+            if (item.length < title.length){
+                for (int i = item.length; i < title.length; i++) {
+                    p.addColumn(Bytes.toBytes(columnFamily[0]),
+                            Bytes.toBytes(title[i]),
+                            Bytes.toBytes(NULLVALUE));
                 }
             }
+
             list.add(p);
             if(count % 10000 == 0 ){
                 System.out.println("========>["+count+"/85855]");

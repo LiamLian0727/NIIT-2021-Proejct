@@ -766,23 +766,62 @@ SELECT|sys.sys_config:null
       <ObjectGrants>ALL PRIVILEGES!
 </ObjectGrants>
     </user>
-    <table id="238" parent="7" name="user"/>
-    <column id="239" parent="238" name="UserName">
+    <table id="238" parent="7" name="tb_user">
+      <Collation>gbk_chinese_ci</Collation>
+    </table>
+    <table id="239" parent="7" name="user"/>
+    <column id="240" parent="238" name="id">
+      <Position>1</Position>
+      <DataType>int(10) unsigned|0s</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>null</SequenceIdentity>
+    </column>
+    <column id="241" parent="238" name="username">
+      <Position>2</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="242" parent="238" name="password">
+      <Position>3</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="243" parent="238" name="sex">
+      <Position>4</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="244" parent="238" name="email">
+      <Position>5</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="245" parent="238" name="tel">
+      <Position>6</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="246" parent="238" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="247" parent="239" name="UserName">
       <Position>1</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="240" parent="238" name="Password">
+    <column id="248" parent="239" name="Password">
       <Position>2</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="241" parent="238" name="EmailID">
+    <column id="249" parent="239" name="EmailID">
       <Position>3</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="242" parent="238" name="PRIMARY">
+    <key id="250" parent="239" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>UserName</ColNames>
       <Primary>1</Primary>
