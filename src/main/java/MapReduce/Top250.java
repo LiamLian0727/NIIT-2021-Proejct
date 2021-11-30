@@ -22,7 +22,7 @@ import static utils.HbaseUtils.init;
  *  r = average for the movie (mean) = (Rating)
  *  (是用普通的方法计算出的平均分)
  *  v = number of votes for the movie = (votes)
- * （投票人数，需要注意的是，只有经常投票者才会被计算在内，这个下面详细解释）
+ * （投票人数，需要注意的是，在IMDb计算中，只有经常投票者才会被计算在内）
  *   m = minimum votes required to be listed in the top 250 (currently 1250)
  *   (进入imdb top 250需要的最小票数，只有三两个人投票的电影就算得满分也没用的）
  *   C = the mean vote across the whole report (currently 5.9)
