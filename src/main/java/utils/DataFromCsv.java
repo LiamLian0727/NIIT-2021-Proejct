@@ -4,9 +4,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -62,6 +59,7 @@ public class DataFromCsv{
             String[] item = line.split(csvSplitBy);
 
             Put p = new Put(Bytes.toBytes(item[0]));
+
             for (int i = 1 ; i < item.length ; i++){
                 if("".equals(item[i])) {
                     p.addColumn(Bytes.toBytes(columnFamily[0]),

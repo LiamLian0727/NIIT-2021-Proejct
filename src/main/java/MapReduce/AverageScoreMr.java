@@ -1,4 +1,4 @@
-package MapReduce.UseOfHbaseMR;
+package MapReduce;
 
 
 import org.apache.hadoop.hbase.client.*;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import static utils.HbaseUtils.*;
 
 /**
- * @author 连仕杰
+ * @author 连仕杰 杜秋予
  */
 public class AverageScoreMr {
     static String csvSplitBy = null;
@@ -80,10 +80,10 @@ public class AverageScoreMr {
                         Bytes.toBytes(String.valueOf(key)));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes("averageScore"),
-                        Bytes.toBytes(format));
+                        Bytes.toBytes(String.format("%.3f", averageScore)));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes("count"),
-                        Bytes.toBytes(count));
+                        Bytes.toBytes(String.valueOf(count)));
                 context.write(null, put);
             }
         }
@@ -99,10 +99,19 @@ public class AverageScoreMr {
          * production_company
          */
 
-        AverageScoreMr.set(",", new String[]{"Info"}, "actors",3);
-        HbaseUtils.jobSubmission(getConnection(init()).getAdmin(), "IMDb",
+        AverageScoreMr.set(
+                ",",
+                new String[]{"Info"},
+                "actors",
+                3);
+
+        HbaseUtils.jobSubmission(
+                getConnection(init()).getAdmin(),
+                "IMDb",
                 "OutAverageScore",
-                AverageScoreMr.Map.class, AverageScoreMr.Reduce.class,
-                Text.class, FloatWritable.class);
+                AverageScoreMr.Map.class,
+                AverageScoreMr.Reduce.class,
+                Text.class,
+                FloatWritable.class);
     }
 }
