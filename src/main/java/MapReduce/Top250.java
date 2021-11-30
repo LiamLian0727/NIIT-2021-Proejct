@@ -135,7 +135,7 @@ public class Top250 {
                 ",",
                 new String[]{"Info"},
                 C,
-                50000
+                1250
         );
 
         HbaseUtils.jobSubmission(
