@@ -8,26 +8,26 @@ import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.mapreduce.TableReducer;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.FloatWritable;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import utils.HbaseUtils;
 
 import java.io.IOException;
 
+import static MapReduce.AverageVote.getC;
 import static utils.HbaseUtils.getConnection;
 import static utils.HbaseUtils.init;
 
 /**
  * @author 连仕杰
- *  r = average for the movie (mean) = (Rating)
- *  (是用普通的方法计算出的平均分)
- *  v = number of votes for the movie = (votes)
+ * r = average for the movie (mean) = (Rating)
+ * (是用普通的方法计算出的平均分)
+ * v = number of votes for the movie = (votes)
  * （投票人数，需要注意的是，只有经常投票者才会被计算在内，这个下面详细解释）
- *   m = minimum votes required to be listed in the top 250 (currently 1250)
- *   (进入imdb top 250需要的最小票数，只有三两个人投票的电影就算得满分也没用的）
- *   C = the mean vote across the whole report (currently 5.9)
- *  （目前所有电影的平均得分）/
- *  weighted rank (WR) = (v ÷ (v + m)) × r + (m ÷ ( v + m)) × C
+ * m = minimum votes required to be listed in the top 250 (currently 1250)
+ * (进入imdb top 250需要的最小票数，只有三两个人投票的电影就算得满分也没用的）
+ * C = the mean vote across the whole report (currently 5.9)
+ * （目前所有电影的平均得分）/
+ * weighted rank (WR) = (v ÷ (v + m)) × r + (m ÷ ( v + m)) × C
  */
 public class Top250 {
 
@@ -35,13 +35,13 @@ public class Top250 {
     static String csvSplitBy = null;
     static String[] columnFamily = null;
     static int m = 0;
-    static float r,v;
+    static float r, v;
     static float C;
 
     static final String NULLVALUE = "N/A";
-    static final String[] typeKey = {"original_title" , "avg_vote" , "votes"};
+    static final String[] typeKey = {"original_title", "avg_vote", "votes"};
 
-    public static void set(String csvSplitBySet, String[] columnFamilySet, float meanVote,int maxMinSet) {
+    public static void set(String csvSplitBySet, String[] columnFamilySet, float meanVote, int maxMinSet) {
         csvSplitBy = csvSplitBySet;
         columnFamily = columnFamilySet;
         C = meanVote;
@@ -52,7 +52,7 @@ public class Top250 {
 
         static private FloatWritable weight = new FloatWritable(0f);
         static private Text title = new Text("default");
-        static String name,rValue,vValue;
+        static String name, rValue, vValue;
 
         @Override
         protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
@@ -67,7 +67,7 @@ public class Top250 {
                 v = Integer.parseInt(vValue);
                 if (v > m) {
                     r = Float.parseFloat(rValue);
-                    float weightedRank = (v / (v + m)) * r + (m / ( v + m)) * C;
+                    float weightedRank = (v / (v + m)) * r + (m / (v + m)) * C;
                     title.set(name.trim());
                     weight.set(weightedRank);
                     context.write(title, weight);
@@ -104,48 +104,48 @@ public class Top250 {
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+    public static void getTop() throws IOException, InterruptedException, ClassNotFoundException {
 
         Configuration init = init();
         Connection conn = getConnection(init);
         Admin admin = conn.getAdmin();
 
-        HbaseUtils.jobSubmission(
-                admin,
+        getC(
+                 conn,
+                 admin,
                 "IMDb",
-                "C",
-                AverageVote.Map.class,
-                AverageVote.Reduce.class,
-                Text.class,
-                FloatWritable.class);
+                "C"
+        );
 
-        Table table = conn.getTable(TableName.valueOf("C"));
-        Scan scan = new Scan();
-        scan.setLimit(1);
-        scan.addColumn(Bytes.toBytes("Per_Info"),Bytes.toBytes("averageVoteC"));
-        ResultScanner results = table.getScanner(scan);
-        for (Result result : results) {
-            byte[] name = result.getValue(Bytes.toBytes("Per_Info"), Bytes.toBytes("averageVoteC"));
-            String s = Bytes.toString(name);
-            C = Float.parseFloat(s);
-        }
-
+        C=getC(conn,admin,"IMDb","C");
 
         Top250.set(
                 ",",
-                new String[]{"Info"},
-                C,
-                50000
+                 new String[]{"Info"},
+                 C,
+                5000
         );
 
         HbaseUtils.jobSubmission(
-                admin,
+                 admin,
                 "IMDb",
                 "TopN",
-                Map.class,
-                Reduce.class,
-                Text.class,
-                FloatWritable.class
+                 Map.class,
+                 Reduce.class,
+                 Text.class,
+                 FloatWritable.class
         );
+    }
+
+    public static void main(String[] args) {
+        try {
+            getTop();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

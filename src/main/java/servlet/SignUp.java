@@ -1,5 +1,8 @@
 package servlet;
 
+import model.User;
+import servlet.impl.UserServiceImpl;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,15 +22,18 @@ public class SignUp extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
         try {
-
+            IUserService userService = new UserServiceImpl();
+            User user = null;
             String name = request.getParameter("UsernameSU");
             boolean equals = request.getParameter("PasswordSU").equals(request.getParameter("ConfirmPassword"));
-            boolean exit = isExist(name);
+            boolean exit = userService.userIsExist(name);
 
             if (equals && !exit && !"".equals(name)) {
-                signUp( name,
-                        request.getParameter("PasswordSU"),
-                        request.getParameter("EmailSU"));
+
+                user.setName(name);
+                user.setPassword(request.getParameter("PasswordSU"));
+                user.setEmail(request.getParameter("EmailSU"));
+                userService.saveUser(user);
                 response.sendRedirect(url + "?error=noError");
             } else if (!equals) {
                 response.sendRedirect(url + "?error=notEqual");

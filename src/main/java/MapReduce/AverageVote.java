@@ -1,8 +1,7 @@
 package MapReduce;
 
-
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.mapreduce.TableReducer;
@@ -18,7 +17,7 @@ import static utils.HbaseUtils.init;
 
 /**
  * @author 连仕杰
- * 用来计算所又电影平均分 C
+ * 用来计算所有电影平均分 C
  */
 public class AverageVote {
     static String csvSplitBy = ",";
@@ -68,15 +67,50 @@ public class AverageVote {
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+    public static float getC(Connection conn, Admin admin, String inputTableName, String outputTableName) throws IOException, InterruptedException, ClassNotFoundException {
 
+        float C = 5.9f;
         HbaseUtils.jobSubmission(
-                getConnection(init()).getAdmin(),
-                "IMDb",
-                "C",
+                admin,
+                inputTableName,
+                outputTableName,
                 AverageVote.Map.class,
                 AverageVote.Reduce.class,
                 Text.class,
                 FloatWritable.class);
+
+        Table table = conn.getTable(TableName.valueOf("C"));
+        Scan scan = new Scan();
+        scan.setLimit(1);
+        scan.addColumn(Bytes.toBytes("Per_Info"), Bytes.toBytes("averageVoteC"));
+        ResultScanner results = table.getScanner(scan);
+        for (Result result : results) {
+
+            byte[] name = result.getValue(Bytes.toBytes("Per_Info"), Bytes.toBytes("averageVoteC"));
+            String s = Bytes.toString(name);
+            C = Float.parseFloat(s);
+        }
+        return C;
+
+    }
+
+    public static void main(String[] args) {
+        Connection connection = null;
+        Admin admin = null;
+        try {
+            connection = getConnection(init());
+             admin = connection.getAdmin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            getC(connection,admin,"IMDb","C");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

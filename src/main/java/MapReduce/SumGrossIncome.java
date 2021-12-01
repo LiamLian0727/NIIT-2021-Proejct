@@ -106,7 +106,7 @@ public class SumGrossIncome {
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+    public static void getSum() throws IOException, InterruptedException, ClassNotFoundException {
         /**
          *
          * usa_gross_income   or   worlwide_gross_income
@@ -127,5 +127,17 @@ public class SumGrossIncome {
                                  SumGrossIncome.Reduce.class,
                                  Text.class,
                                  LongWritable.class);
+    }
+
+    public static void main(String[] args) {
+        try {
+            getSum();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

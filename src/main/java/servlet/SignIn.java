@@ -1,6 +1,8 @@
 package servlet;
 
 import MySQL.Login;
+import model.User;
+import servlet.impl.UserServiceImpl;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,15 +29,17 @@ public class SignIn extends HttpServlet {
         } else {
 
             String password = request.getParameter("Password");
-            boolean b = false;
+            IUserService userService = new UserServiceImpl();
+            User user = null;
             try {
-                b = Login.signIn(name, password);
+                user = userService.login(name, password);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            if (b) {
+            if (user != null) {
+                request.getSession().setAttribute("user", user);
                 response.sendRedirect(utlMain);
             } else {
                 response.sendRedirect(urlIndex + "?error=passwdError");

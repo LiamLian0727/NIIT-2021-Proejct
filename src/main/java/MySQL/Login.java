@@ -1,12 +1,12 @@
 package MySQL;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static utils.MySqlUtils.createConnection;
 
+/**
+ * @author 连仕杰
+ */
 public class Login {
 
     public static boolean signIn(String name, String password) throws SQLException, ClassNotFoundException {
@@ -35,12 +35,29 @@ public class Login {
         return resultSet.next();
     }
 
-    public static void signUp(String name,String password,String email) throws SQLException, ClassNotFoundException {
+    public static void signUp(String name, String password, String email) throws SQLException, ClassNotFoundException {
         Connection con = createConnection();
         Statement stmt = con.createStatement();
         String sql = "insert into niit.user values('" + name + "','"
-                                                      + password + "','"
-                                                      + email + "')";
+                + password + "','"
+                + email + "')";
         stmt.executeUpdate(sql);
+    }
+
+    public static String getEmail(String username, String password) throws SQLException, ClassNotFoundException {
+        Connection con = createConnection();
+
+        String sql = "select * from tb_user where username = ? and password = ?";
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        ps.setString(1, username);
+        ps.setString(2, password);
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getString("EmailID");
+        }
+        return "NULL";
+
     }
 }

@@ -81,16 +81,13 @@ public class AverageScoreMr {
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes("averageScore"),
                         Bytes.toBytes(String.format("%.3f", averageScore)));
-                put.addColumn(Bytes.toBytes("Per_Info"),
-                        Bytes.toBytes("count"),
-                        Bytes.toBytes(String.valueOf(count)));
                 context.write(null, put);
             }
         }
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+    public static void getAverage() throws IOException, InterruptedException, ClassNotFoundException {
         /**
          * actors
          * or
@@ -113,5 +110,17 @@ public class AverageScoreMr {
                 AverageScoreMr.Reduce.class,
                 Text.class,
                 FloatWritable.class);
+    }
+
+    public static void main(String[] args) {
+        try {
+            getAverage();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

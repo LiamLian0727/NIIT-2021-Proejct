@@ -1,24 +1,31 @@
 package utils;
 
+import com.alibaba.fastjson.JSONObject;
+import model.MostPopularVo;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.mapreduce.TableReducer;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.log4j.BasicConfigurator;
 
-import java.io.File;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 连仕杰
  */
 public class HbaseUtils {
 
-    public static Configuration init() throws IOException {
+    public static Configuration init(){
         Configuration con = new Configuration();
         con.set("hbase.zookeeper.quorum", "niit");
         System.setProperty("HADOOP_USER_NAME", "root");
@@ -88,5 +95,51 @@ public class HbaseUtils {
             return false;
         }
     }
+
+    public static ResultScanner getAllRows(Connection conn,String tableName,int limit) throws IOException {
+
+        Table table = conn.getTable(TableName.valueOf(tableName));
+        //得到用于扫描region的对象
+        Scan scan = new Scan();
+
+        scan.setLimit(limit);
+        //使用HTable得到resultScanner实现类的对象
+        return table.getScanner(scan);
+    }
+
+    public static List<MostPopularVo> getAllRows(Connection conn,String targetTable,int limit,HbaseUtils hbaseUtils) throws IOException {
+        List<MostPopularVo> mostPopulars = new ArrayList<>();
+        ResultScanner results = getAllRows(conn,targetTable,limit);
+        /** 返回rk下边的所有单元格*/
+        for(Result result : results){
+            //获取所有单元格数据
+            Cell[] cells = result.rawCells();
+            for(Cell cell : cells){
+                MostPopularVo mostPopular = new MostPopularVo();
+                mostPopular.setRowkey(Bytes.toString(CellUtil.cloneRow(cell)));
+                mostPopular.setFamily(Bytes.toString(CellUtil.cloneFamily(cell)));
+                mostPopular.setColumn(Bytes.toString(CellUtil.cloneQualifier(cell)));
+                mostPopular.setValue(Bytes.toString(CellUtil.cloneValue(cell)));
+                mostPopulars.add(mostPopular);
+            }
+        }
+        System.out.println(mostPopulars);
+        return mostPopulars;
+    }
+
+    public static void setJSON(Connection conn, String tableName, int limit, HttpServletRequest request, String name) throws IOException {
+        List<MostPopularVo>  mostPopularVos=
+                getAllRows(
+                        conn,
+                        tableName,
+                        limit,
+                        null);
+        //将Java对象转换为JSON字符串存入到域中
+        JSONObject targetJson = new JSONObject();
+        targetJson.put("rows", targetJson);
+        request.setAttribute(name,targetJson);
+    }
+
+
 
 }

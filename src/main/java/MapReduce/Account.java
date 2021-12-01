@@ -83,7 +83,7 @@ public class Account {
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+    public static void getAccount() throws IOException, InterruptedException, ClassNotFoundException {
         /**
          * actors
          * or
@@ -108,5 +108,17 @@ public class Account {
                  Text.class,
                  IntWritable.class
         );
+    }
+
+    public static void main(String[] args) {
+        try {
+            getAccount();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

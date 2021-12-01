@@ -22,15 +22,105 @@
         <nav class="navbar">
             <a href="./index.html">home</a>
             <a href="./box-office.html">box-office</a>
-            <a href="./rating.html">rating</a>
+            <a href="top.html">rating</a>
             <a href="./director.html">director</a>
             <a href="./country.html">country</a>
         </nav>
 
     </div>
 
+    <p>Here is a table</p>
+    <input class="check" id="director" type="checkbox" value="导演"/><label for="director">导演</label><br/>
+    <input class="check" id="actors" type="checkbox" value="演员"/><label for="actors">演员</label><br/>
+    <input type="button" onclick="get()">
+    <div id="main" style="width:600px;height:400px;" onclick="get()"></div>
+    <script type="text/javascript">
+        let myChart = echarts.init(document.getElementById('main'));
+
+        let option = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{a}:{b}:{c}',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#888'
+                    }
+                }
+            },
+            legend: {
+                show: true,
+                bottom: 0,                 //legend位置的调整
+                left: 10,
+                textStyle: {
+                    color: '#5e859e',
+                    fontSize: 10
+                },
+                itemGap: 20,
+                data: ['平均评分'],
+                inactiveColor: '#ccc'
+            },
+            //图位置调整
+            grid: {
+                top: '5%',
+                left: '0%',
+                right: '0%',
+                bottom: '10%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    name: '评分',
+                    data: [],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#5e859e',   //横坐标轴和字体颜色
+                            width: 2            //这里是为了突出显示加上的
+                        }
+                    },
+                    axisPointer: {
+                        type: 'shadow'
+
+                    },
+                    axisTick: {
+                        show: true,
+                        interval: 0
+                    }
+                },
+
+            ],
+            //设置两个y轴，左边显示数量，右边显示概率
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '评分',
+                    show: true,
+                    interval: 100,
+                    axisLine: {
+                        lineStyle: {
+                            color: '#5e859e',
+                            width: 2
+                        }
+                    }
+                }
+            ],
+            //每个设备分数量、概率2个指标，只要让他们的name一致，即可通过，legeng进行统一的切换
+            series: [
+                {
+                    name: '平均评分',
+                    type: 'bar',
+                    color: '#f17e0e',
+                    data: [],
+                    barWidth: '50%'
+
+                },
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+    </script>
 </header>
 
-<!-- header section ends -->
 
-<!-- 图表 start -->
