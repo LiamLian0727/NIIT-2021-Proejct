@@ -15,7 +15,7 @@ import java.io.IOException;
 import static utils.HbaseUtils.*;
 
 /**
- * @author 连仕杰 杜秋予
+ * @author 连仕杰
  */
 public class AverageScoreMr {
     static String csvSplitBy = null;
