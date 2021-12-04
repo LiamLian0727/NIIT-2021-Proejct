@@ -10,30 +10,34 @@ import org.apache.hadoop.hbase.mapreduce.TableReducer;
 import utils.HbaseUtils;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.TreeMap;
 
 import static utils.HbaseUtils.*;
 
 /**
- * @author 连仕杰 杜秋予
+ * @author 连仕杰
  */
-public class SumGrossIncome {
+public class Sum {
     static String csvSplitBy = null;
     static String[] columnFamily = null;
     static String typeIncome = null;
     static String typeKey = null;
     static boolean earn = false;
+    static int size = 10;
+    static TreeMap<Long, String> tree;
     //ture ：纯利润 false ： 票房
 
 
     static final String NULLVALUE = "N/A";
 
-    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeIncomeSet, String typeKeySet,boolean earnSet) {
+    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeIncomeSet, String typeKeySet, boolean earnSet, int sizeSet) {
         csvSplitBy = csvSplitBySet;
         columnFamily = columnFamilySet;
         typeIncome = typeIncomeSet;
         typeKey = typeKeySet;
         earn = earnSet;
-
+        size = sizeSet;
 
     }
 
@@ -41,7 +45,7 @@ public class SumGrossIncome {
 
         static public LongWritable sumIn = new LongWritable(0);
         static private Text word = new Text("default");
-        static String income, keyValue,budget;
+        static String income, keyValue, budget;
         static long voteLong;
 
         @Override
@@ -50,7 +54,7 @@ public class SumGrossIncome {
                     Bytes.toBytes(typeKey)));
             income = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
                     Bytes.toBytes(typeIncome)));
-            if (earn){
+            if (earn) {
                 budget = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
                         Bytes.toBytes("budget")));
                 if (!(NULLVALUE.equals(keyValue) || NULLVALUE.equals(income) || NULLVALUE.equals(budget))) {
@@ -63,7 +67,7 @@ public class SumGrossIncome {
                         context.write(word, sumIn);
                     }
                 }
-            }else {
+            } else {
                 if (!(NULLVALUE.equals(keyValue) || NULLVALUE.equals(income))) {
                     keyValue = keyValue.replaceAll("\"", "");
                     voteLong = Long.parseLong(income.split(" ")[1]);
@@ -84,23 +88,50 @@ public class SumGrossIncome {
         String format;
 
         @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            tree = new TreeMap<>();
+        }
+
+        @Override
         public void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
             long sum = 0;
             for (LongWritable value : values) {
                 sum += value.get();
             }
-            double sumDivW = sum;
-            format = String.format("%12.0f", 1e12 - sumDivW);
+            tree.put(sum, key.toString());
+            if (tree.size() > size) {
+                tree.remove(tree.firstKey());
+            }
 
-            Put put = new Put(Bytes.toBytes(format + key + typeKey));
-            put.addColumn(Bytes.toBytes("Per_Info"),
-                    Bytes.toBytes(typeKey),
-                    Bytes.toBytes(String.valueOf(key)));
-            put.addColumn(Bytes.toBytes("Per_Info"),
-                    Bytes.toBytes("sumIncome"),
-                    Bytes.toBytes(String.valueOf(sumDivW)));
+        }
 
-            context.write(null, put);
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+
+            String value;
+            Long key;
+            int max = tree.size();
+            int count = 1;
+            Iterator iter = tree.entrySet().iterator();
+
+            while (iter.hasNext()) {
+
+                java.util.Map.Entry entry = (java.util.Map.Entry) iter.next();
+                // 获取key
+                key = (Long) entry.getKey();
+                value = (String) entry.getValue();
+                Put put = new Put(Bytes.toBytes((max - count) + typeKey));
+                put.addColumn(Bytes.toBytes("Per_Info"),
+                        Bytes.toBytes(typeKey),
+                        Bytes.toBytes(value));
+                put.addColumn(Bytes.toBytes("Per_Info"),
+                        Bytes.toBytes("sumIncome"),
+                        Bytes.toBytes(String.valueOf(key)));
+
+                context.write(null, put);
+                count++;
+            }
+
 
         }
     }
@@ -113,20 +144,21 @@ public class SumGrossIncome {
          */
 
 
-        SumGrossIncome.set(",",
-                            new String[]{"Info"},
-                            "worlwide_gross_income",
-                            "original_title",
-                            false
+        Sum.set(",",
+                new String[]{"Info"},
+                "worlwide_gross_income",
+                "original_title",
+                false,
+                10
         );
 
         HbaseUtils.jobSubmission(getConnection(init()).getAdmin(),
-                                "IMDb",
-                                "OutSumGrossIncome",
-                                 SumGrossIncome.Map.class,
-                                 SumGrossIncome.Reduce.class,
-                                 Text.class,
-                                 LongWritable.class);
+                "IMDb",
+                "OutSumGrossIncome",
+                Sum.Map.class,
+                Sum.Reduce.class,
+                Text.class,
+                LongWritable.class);
     }
 
     public static void main(String[] args) {

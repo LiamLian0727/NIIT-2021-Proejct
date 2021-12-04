@@ -1,6 +1,6 @@
 package echartsShowMR;
 
-import MapReduce.SumGrossIncome;
+import MapReduce.Sum;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
@@ -27,12 +27,14 @@ public class SumIncomeEcharts extends HttpServlet {
         Configuration init = utils.HbaseUtils.init();
         Connection conn = getConnection(init);
         Admin admin = conn.getAdmin();
+        String status = "error";
 
-        SumGrossIncome.set(",",
+        Sum.set(",",
                 new String[]{"Info"},
                 "worlwide_gross_income",
                 "original_title",
-                false
+                false,
+                10
         );
 
         try {
@@ -40,16 +42,20 @@ public class SumIncomeEcharts extends HttpServlet {
                     admin,
                     "IMDb",
                     "OutSumGrossIncome",
-                    SumGrossIncome.Map.class,
-                    SumGrossIncome.Reduce.class,
+                    Sum.Map.class,
+                    Sum.Reduce.class,
                     Text.class,
                     LongWritable.class);
 
-            setJSON(conn, "OutSumGrossIncome", 10, request, "Sum");
+            setJSON(conn, "OutSumGrossIncome", request, "Sum");
+
+            status="success";
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }finally {
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/country.html?status="+status);
         }
     }
 

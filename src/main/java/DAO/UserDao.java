@@ -4,10 +4,12 @@ import model.User;
 
 import java.sql.SQLException;
 
-import static MySQL.Login.*;
+import static utils.MySqlUtils.*;
 
 /**
  * @author 连仕杰
+ *
+ * 实现对用户的增改查
  */
 public class UserDao{
 

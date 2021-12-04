@@ -1,12 +1,8 @@
 package echartsShowMR;
 
 import MapReduce.Top250;
-import com.alibaba.fastjson.JSONObject;
-import model.MostPopularVo;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.Text;
 import utils.HbaseUtils;
@@ -17,9 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-import static MapReduce.AverageVote.getC;
+import static MapReduce.AverageC.getC;
 import static utils.HbaseUtils.*;
 
 /**
@@ -35,6 +30,7 @@ Top250Echarts extends HttpServlet {
         Connection conn = getConnection(init);
         Admin admin = conn.getAdmin();
         float C = 5.9f;
+        String status = "error";
 
         try {
             C = getC(
@@ -49,7 +45,8 @@ Top250Echarts extends HttpServlet {
                     ",",
                     new String[]{"Info"},
                     C,
-                    5000
+                    5000,
+                    10
             );
 
 
@@ -63,14 +60,16 @@ Top250Echarts extends HttpServlet {
                     FloatWritable.class
             );
 
-            setJSON(conn, "topNTarget", 10, request, "topN");
+            setJSON(conn, "topNTarget", request, "topN");
+
+            status="success";
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            getServletContext().getRequestDispatcher("http://localhost:8080/Group4Project/analyze/top.html").forward(request, response);
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/top.html?status="+status);
         }
     }
 

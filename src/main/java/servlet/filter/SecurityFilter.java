@@ -25,6 +25,7 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 获取登录的用户信息
+        response.setContentType("text/html");
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         String currentURL = request.getRequestURI();

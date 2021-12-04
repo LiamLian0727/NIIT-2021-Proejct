@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static MySQL.Login.isExist;
-import static MySQL.Login.signUp;
 
 /**
  * @author 连仕杰

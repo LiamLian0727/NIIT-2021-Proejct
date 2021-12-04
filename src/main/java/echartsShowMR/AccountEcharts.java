@@ -18,6 +18,9 @@ import java.io.IOException;
 import static utils.HbaseUtils.getConnection;
 import static utils.HbaseUtils.*;
 
+/**
+ * @author 殷明，刘宣兑
+ */
 @WebServlet(urlPatterns = "/AccountEcharts")
 public class AccountEcharts extends HttpServlet {
     @Override
@@ -26,12 +29,18 @@ public class AccountEcharts extends HttpServlet {
         Configuration init = utils.HbaseUtils.init();
         Connection conn = getConnection(init);
         Admin admin = conn.getAdmin();
+        String stauts = "error";
+
+        String type = request.getParameter("type");
+        float min = Float.parseFloat(request.getParameter("min"));
+        int num = Integer.parseInt(request.getParameter("num"));
 
         Account.set(
                 ",",
                 new String[]{"Info"},
-                "language",
-                0.01f
+                type,
+                min,
+                10
         );
 
         try {
@@ -45,11 +54,15 @@ public class AccountEcharts extends HttpServlet {
                     IntWritable.class
             );
 
-            setJSON(conn, "OutAccount", 10, request, "Acc");
+            setJSON(conn, "OutAccount", request, "Acc");
+
+            stauts = "success";
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }finally {
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/account.html?status="+stauts);
         }
     }
 

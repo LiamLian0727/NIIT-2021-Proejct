@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <title>文件上传页面</title>
+    <link rel="stylesheet" href="css/styleUp.css">
+</head>
+<body>
+<!-- 名片分三大块
+最外层的一块a
+平面圆柱一块c -->
+<div class="a">
+    <div class="c">
+        <!-- --i是用来计算平面圆柱的动效延迟和距离的
+        --w则是用来计算平面圆柱的宽度 -->
+        <div class="d" style="--i:1;--w:1.5"></div>
+        <div class="d" style="--i:2;--w:1.6"></div>
+        <div class="d" style="--i:3;--w:1.4"></div>
+        <div class="d" style="--i:4;--w:1.7"></div>
+        <div class="e" style="--i:1"></div>
+    </div>
+    <div class="f">
+<!--    <form  method="post" enctype="multipart/form-data">-->
+        <div class="content">
+            <input id="default-btn" type="file" hidden onchange=""/>
+            <div class="btn">
+                <button onclick="active()" id="custom-btn">Choose a file</button>
+            </div>
+            <div class="file-name">No file chosen</div>
+            <input id="btn" type="submit" value="Submit" />
+        </div>
+<!--    </form>-->
+    </div>
+
+</div>
+
+<script>
+    const defaultBtn = document.querySelector("#default-btn");
+    const customBtn = document.querySelector("#custom-btn");
+    const fileName = document.querySelector(".file-name");
+    let regExp = /[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
+    function active() {
+        defaultBtn.click();
+    }
+    defaultBtn.addEventListener("change",function () {
+        if(this.value){
+            let nameValue = this.value.match(regExp);
+            fileName.style.display = "block";
+            fileName.textContent = nameValue;
+            // 选择文件后显示文件名
+        }else {
+            fileName.style.display = "block";
+            fileName.textContent = "No file chosen";
+        }
+    });
+</script>
+
+</body>
+</html>

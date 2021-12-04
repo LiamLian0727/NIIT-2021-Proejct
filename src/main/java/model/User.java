@@ -1,7 +1,7 @@
 package model;
 
 /**
- * @author 连仕杰
+ * @author 郑欣然
  */
 public class User {
 

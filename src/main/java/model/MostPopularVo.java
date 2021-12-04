@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * @author 郑欣然
+ */
 public class MostPopularVo {
     private String rowkey;
     private String family;

@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 /**
  * @author 连仕杰
  */
-public class PutDataToHDFS {
+public class PutDataToHdfs {
 
     public static FileSystem fs;
 

@@ -11,26 +11,31 @@ import org.apache.hadoop.hbase.mapreduce.TableReducer;
 import utils.HbaseUtils;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.TreeMap;
 
 import static utils.HbaseUtils.*;
 
 /**
- * @author 殷明
+ * @author 殷明，刘宣兑
  */
 public class Account {
     static String csvSplitBy = null;
     static String[] columnFamily = null;
     static String typeKey = null;
     static float percentageMin = 0f;
+    static TreeMap<Float,String> tree;
+    static int size = 10;
 
 
     static final String NULLVALUE = "N/A";
 
-    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, float percentageMinSet) {
+    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, float percentageMinSet, int sizeSet) {
         csvSplitBy = csvSplitBySet;
         columnFamily = columnFamilySet;
         typeKey = typeKeySet;
         percentageMin = percentageMinSet;
+        size = sizeSet;
 
     }
 
@@ -61,6 +66,11 @@ public class Account {
         String format;
 
         @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            tree = new TreeMap<>();
+        }
+
+        @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             final float sum = 85585F;
             int count = 0;
@@ -68,17 +78,53 @@ public class Account {
                 count += value.get();
             }
             float percentage = count / sum;
-            format = String.format("%.3f", 1f - percentage);
-            if (percentage >= percentageMin) {
-                Put put = new Put(Bytes.toBytes(format + key + typeKey));
-                put.addColumn(Bytes.toBytes("Per_Info"),
-                        Bytes.toBytes(typeKey),
-                        Bytes.toBytes(String.valueOf(key)));
-                put.addColumn(Bytes.toBytes("Per_Info"),
-                        Bytes.toBytes("percentage"),
-                        Bytes.toBytes(String.format("%.3f", percentage)));
-                context.write(null, put);
+            tree.put(percentage,key.toString());
+            if (tree.size() > size){
+                tree.remove(tree.firstKey());
             }
+
+        }
+
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+
+            String value;
+
+            float key;
+
+            float other = 1f;
+            Iterator iter = tree.entrySet().iterator();
+
+            while (iter.hasNext()) {
+
+                java.util.Map.Entry entry = (java.util.Map.Entry) iter.next();
+                // 获取key
+                key = (Float) entry.getKey();
+                other -= key;
+                value = (String) entry.getValue();
+                format = String.format("%.3f", 1f - key);
+                if (key >= percentageMin) {
+                    Put put = new Put(Bytes.toBytes(format + value + typeKey));
+                    put.addColumn(Bytes.toBytes("Per_Info"),
+                            Bytes.toBytes(typeKey),
+                            Bytes.toBytes(value));
+                    put.addColumn(Bytes.toBytes("Per_Info"),
+                            Bytes.toBytes("percentage"),
+                            Bytes.toBytes(String.format("%.3f", key)));
+                    context.write(null, put);
+                }
+
+            }
+            Put put = new Put(Bytes.toBytes(String.format("%.3f", 1f - other) + "other" + typeKey));
+            put.addColumn(Bytes.toBytes("Per_Info"),
+                    Bytes.toBytes(typeKey),
+                    Bytes.toBytes("other"));
+            put.addColumn(Bytes.toBytes("Per_Info"),
+                    Bytes.toBytes("percentage"),
+                    Bytes.toBytes(String.format("%.3f", other)));
+            context.write(null, put);
+
+
         }
     }
 
@@ -96,7 +142,8 @@ public class Account {
                 ",",
                  new String[]{"Info"},
                 "language",
-                0.01f
+                0.01f,
+                10
         );
 
         HbaseUtils.jobSubmission(

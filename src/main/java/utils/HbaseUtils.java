@@ -96,23 +96,18 @@ public class HbaseUtils {
         }
     }
 
-    public static ResultScanner getAllRows(Connection conn,String tableName,int limit) throws IOException {
+    public static ResultScanner getAllRows(Connection conn,String tableName) throws IOException {
 
         Table table = conn.getTable(TableName.valueOf(tableName));
-        //得到用于扫描region的对象
         Scan scan = new Scan();
-
-        scan.setLimit(limit);
-        //使用HTable得到resultScanner实现类的对象
         return table.getScanner(scan);
     }
 
-    public static List<MostPopularVo> getAllRows(Connection conn,String targetTable,int limit,HbaseUtils hbaseUtils) throws IOException {
+    public static List<MostPopularVo> getAllRows(Connection conn,String targetTable,HbaseUtils hbaseUtils) throws IOException {
         List<MostPopularVo> mostPopulars = new ArrayList<>();
-        ResultScanner results = getAllRows(conn,targetTable,limit);
+        ResultScanner results = getAllRows(conn,targetTable);
         /** 返回rk下边的所有单元格*/
         for(Result result : results){
-            //获取所有单元格数据
             Cell[] cells = result.rawCells();
             for(Cell cell : cells){
                 MostPopularVo mostPopular = new MostPopularVo();
@@ -127,14 +122,12 @@ public class HbaseUtils {
         return mostPopulars;
     }
 
-    public static void setJSON(Connection conn, String tableName, int limit, HttpServletRequest request, String name) throws IOException {
+    public static void setJSON(Connection conn, String tableName, HttpServletRequest request, String name) throws IOException {
         List<MostPopularVo>  mostPopularVos=
                 getAllRows(
                         conn,
                         tableName,
-                        limit,
                         null);
-        //将Java对象转换为JSON字符串存入到域中
         JSONObject targetJson = new JSONObject();
         targetJson.put("rows", targetJson);
         request.setAttribute(name,targetJson);

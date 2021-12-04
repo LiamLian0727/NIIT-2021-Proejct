@@ -1,6 +1,5 @@
 package servlet;
 
-import MySQL.Login;
 import model.User;
 import servlet.impl.UserServiceImpl;
 

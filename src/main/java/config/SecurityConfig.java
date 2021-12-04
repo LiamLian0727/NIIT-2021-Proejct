@@ -3,6 +3,9 @@ package config;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author 连仕杰
+ */
 public class SecurityConfig {
     private static List<String> uriList;
     public static List<String> getUriList() {
@@ -15,5 +18,6 @@ public class SecurityConfig {
     static{
         uriList = new ArrayList<>();
         uriList.add(urlIndex);
+        uriList.add("/");
     }
 }

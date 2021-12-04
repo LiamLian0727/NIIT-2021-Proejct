@@ -19,7 +19,7 @@ import static utils.HbaseUtils.init;
  * @author 连仕杰
  * 用来计算所有电影平均分 C
  */
-public class AverageVote {
+public class AverageC {
     static String csvSplitBy = ",";
     static String[] columnFamily = new String[]{"Info"};
 
@@ -74,8 +74,8 @@ public class AverageVote {
                 admin,
                 inputTableName,
                 outputTableName,
-                AverageVote.Map.class,
-                AverageVote.Reduce.class,
+                AverageC.Map.class,
+                AverageC.Reduce.class,
                 Text.class,
                 FloatWritable.class);
 

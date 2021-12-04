@@ -4,7 +4,6 @@ import DAO.UserDao;
 import model.User;
 import servlet.IUserService;
 
-import java.sql.SQLException;
 
 
 /**

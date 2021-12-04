@@ -16,6 +16,7 @@ import static utils.HbaseUtils.*;
 /**
  * @author 连仕杰
  */
+
 public class Filters {
     static Configuration con;
     static Connection conn;

@@ -11,26 +11,32 @@ import org.apache.hadoop.hbase.mapreduce.TableReducer;
 import utils.HbaseUtils;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.TreeMap;
 
 import static utils.HbaseUtils.*;
 
 /**
- * @author 连仕杰
+ * @author 郑欣然 连仕杰
  */
-public class AverageScoreMr {
+
+public class Average {
     static String csvSplitBy = null;
     static String[] columnFamily = null;
     static String typeKey = null;
     static int countMin = 0;
+    static int size = 100;
+    static TreeMap<Float, String> tree;
 
 
     static final String NULLVALUE = "N/A";
 
-    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, int countMinSet) {
+    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, int countMinSet, int sizeSet) {
         csvSplitBy = csvSplitBySet;
         columnFamily = columnFamilySet;
         typeKey = typeKeySet;
         countMin = countMinSet;
+        size = sizeSet;
 
     }
 
@@ -40,6 +46,7 @@ public class AverageScoreMr {
         static private Text word = new Text("default");
         static String vote, keyValue;
         static float voteFloat;
+
 
         @Override
         protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
@@ -65,6 +72,11 @@ public class AverageScoreMr {
         String format;
 
         @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            tree = new TreeMap<>();
+        }
+
+        @Override
         public void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
             float sum = 0, count = 0;
             for (FloatWritable value : values) {
@@ -72,17 +84,41 @@ public class AverageScoreMr {
                 count++;
             }
             float averageScore = sum / count;
-            format = String.format("%.3f", 10f - averageScore);
             if (count >= countMin) {
-                Put put = new Put(Bytes.toBytes(format + key + typeKey));
+                tree.put(averageScore, String.valueOf(key));
+                if (tree.size() > size) {
+                    tree.remove(tree.firstKey());
+                }
+            }
+        }
+
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+            String value = null;
+
+            float averageScore;
+
+            Iterator iter = tree.entrySet().iterator();
+
+            while (iter.hasNext()) {
+
+                java.util.Map.Entry entry = (java.util.Map.Entry) iter.next();
+                // 获取key
+                averageScore = (Float) entry.getKey();
+                value = (String)entry.getValue();
+                format = String.format("%.3f", 10f - averageScore);
+
+                Put put = new Put(Bytes.toBytes(format + value + typeKey));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes(typeKey),
-                        Bytes.toBytes(String.valueOf(key)));
+                        Bytes.toBytes(value));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes("averageScore"),
                         Bytes.toBytes(String.format("%.3f", averageScore)));
                 context.write(null, put);
             }
+
+
         }
     }
 
@@ -96,18 +132,18 @@ public class AverageScoreMr {
          * production_company
          */
 
-        AverageScoreMr.set(
+        Average.set(
                 ",",
                 new String[]{"Info"},
                 "actors",
-                3);
+                3, 10);
 
         HbaseUtils.jobSubmission(
                 getConnection(init()).getAdmin(),
                 "IMDb",
                 "OutAverageScore",
-                AverageScoreMr.Map.class,
-                AverageScoreMr.Reduce.class,
+                Average.Map.class,
+                Average.Reduce.class,
                 Text.class,
                 FloatWritable.class);
     }

@@ -1,0 +1,128 @@
+body{
+    background-color: rgb(204, 212, 230);
+    display: flex;
+    justify-content: center;
+}
+.a{
+    position: relative;
+    width: 700px;
+    height: 400px;
+    border: #fff 10px solid;
+    background-color: rgb(120,140,200);
+    top: 120px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.c{
+    position: absolute;
+    top: -130px;
+    right: -240px;
+}
+.d,.e{
+    position: absolute;
+    right: calc(var(--i)*100px);
+    width: calc(var(--w)*40px);
+    height: 500px;
+    overflow: hidden;
+    border-radius: 100px;
+    /*变斜*/
+    transform: rotateZ(220deg) translate(0,0);
+    background: rgb(240,220,150);
+}
+.d:nth-child(2){
+    background: #e6a0a2;
+}
+.d:nth-child(3){
+    background: #f6c0b4;
+}
+.e{
+    left: -470px;
+    top: -140px;
+    width: 70px;
+    background-color: rgb(90,220,150);
+}
+
+.f{
+    width: 250px;
+    height: 250px;
+    position: absolute;
+    background-size: cover;
+    margin: 70px;
+}
+
+.content{
+    position: relative;
+    top: 15%;
+    left: 5%;
+    display: block;
+    align-items: center;
+}
+.content .btn{
+    height: 50px;
+    width: 170px;
+}
+.content .btn button{
+    height:100%;
+    width:100%;
+    border:none;
+    outline:none;
+    background: #949de0;
+    /*按钮字体颜色*/
+    color:#fff;
+    border-radius: 5px;
+    font-size: 18px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:all 0.3s ease;
+}
+.btn button:hover{
+    background: #213b82;
+}
+.content .file-name{
+    width:145px;
+    position: relative;
+    background: #949de0;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-top: 15px;
+
+}
+.content .file-name:before{
+    position: absolute;
+    content: '';
+    height: 15px;
+    width:15px;
+    background:#949de0;
+    left:65px;
+    top:2%;
+    /*尖尖气泡*/
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.content #btn {
+    height: 50px;
+    width: 170px;
+    margin: 10px;
+    border:none;
+    outline:none;
+    background: #949de0;
+    position: absolute;
+    left:-10px;
+    top:145px;
+    /*按钮字体颜色*/
+    color:#fff;
+    border-radius: 5px;
+    font-size: 18px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:all 0.3s ease;
+}
+input[type=submit]:hover{
+    background: #213b82;
+}
+

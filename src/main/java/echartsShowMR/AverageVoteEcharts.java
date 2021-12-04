@@ -1,6 +1,6 @@
 package echartsShowMR;
 
-import MapReduce.AverageScoreMr;
+import MapReduce.Average;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import static utils.HbaseUtils.*;
 
 /**
- * @author 连仕杰
+ * @author 郑欣然 连仕杰
  */
 @WebServlet(urlPatterns = "/AverageVoteEcharts")
 public class AverageVoteEcharts extends HttpServlet {
@@ -28,28 +28,33 @@ public class AverageVoteEcharts extends HttpServlet {
         Configuration init = utils.HbaseUtils.init();
         Connection conn = getConnection(init);
         Admin admin = conn.getAdmin();
+        String status = "error";
 
-        AverageScoreMr.set(
+        Average.set(
                 ",",
                 new String[]{"Info"},
                 "actors",
-                3);
+                3,10);
 
         try {
             HbaseUtils.jobSubmission(
                     admin,
                     "IMDb",
                     "OutAverageScore",
-                    AverageScoreMr.Map.class,
-                    AverageScoreMr.Reduce.class,
+                    Average.Map.class,
+                    Average.Reduce.class,
                     Text.class,
                     FloatWritable.class);
 
-            setJSON(conn, "OutAverageScore", 10, request, "Ave");
+            setJSON(conn, "OutAverageScore", request, "Ave");
+
+            status = "success";
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }finally {
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/director?status="+status);
         }
     }
 
