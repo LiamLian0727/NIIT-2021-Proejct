@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static utils.HbaseUtils.*;
+import static utils.HbaseUtils.init;
 
 /**
  * @author 连仕杰
@@ -29,33 +30,41 @@ public class SumIncomeEcharts extends HttpServlet {
         Admin admin = conn.getAdmin();
         String status = "error";
 
-        Sum.set(",",
-                new String[]{"Info"},
-                "worlwide_gross_income",
-                "original_title",
-                false,
-                10
+        String type1 = request.getParameter("type1");
+        String type2 = request.getParameter("type2");
+        int num = Integer.parseInt(request.getParameter("num"));
+
+//      String type1 = "worlwide_gross_income";
+//      String type2 = "original_title";
+        System.out.println("------------------"+type1 + ":" + type2+"-----------------------------");
+
+        Sum.set(
+                ",",
+                 new String[]{"Info"},
+                 type1,
+                 type2,
+                 num
         );
 
         try {
             HbaseUtils.jobSubmission(
-                    admin,
+                     admin,
                     "IMDb",
                     "OutSumGrossIncome",
-                    Sum.Map.class,
-                    Sum.Reduce.class,
-                    Text.class,
-                    LongWritable.class);
+                     Sum.Map.class,
+                     Sum.Reduce.class,
+                     Text.class,
+                     Text.class);
 
-            setJSON(conn, "OutSumGrossIncome", request, "Sum");
+            setJSON(conn, "OutSumGrossIncome", request, "Sum", type2, "sumIncome");
 
-            status="success";
+            status = "success";
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }finally {
-            response.sendRedirect("http://localhost:8080/Group4Project/analyze/country.html?status="+status);
+        } finally {
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/sum.jsp?status=" + status);
         }
     }
 

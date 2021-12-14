@@ -13,16 +13,16 @@ public interface IUserService {
      * saveUser（） ： 注册
      * <p/>
      * <b>参数 :<b/>
-     *
+     * <p/>
      * @param user 用户类
      */
     public void saveUser(User user) throws SQLException, ClassNotFoundException;
 
     /**
      * login（） ： 登录
+     * <p/>
      * <b>参数 :<b/>
      * <p/>
-     *
      * @param username 用户名
      * @param password 用户密码
      * @return 返回User对象
@@ -31,9 +31,9 @@ public interface IUserService {
 
     /**
      * userIsExist() :  检查用户是否存在
+     * <p/>
      * <b>参数 :<b/>
      * <p/>
-     *
      * @param username 用户名
      * @return 是否存在该用户
      */

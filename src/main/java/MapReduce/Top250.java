@@ -37,7 +37,14 @@ public class Top250 {
      * the mean vote across the whole report (currently 5.9)
      * （目前所有电影的平均得分）/
      * weighted rank (WR) = (v ÷ (v + m)) × r + (m ÷ ( v + m)) × C
-     */
+     * <br/>
+     * @param csvSplitBySet
+     * 使用分隔符
+     * @param columnFamilySet
+     * 列族名
+     * @param size
+     * 输出个数(默认加1 因为有other = 1 - sum（size1，size2 ……）)
+     * */
 
     static String csvSplitBy = null;
     static String[] columnFamily = null;

@@ -4,33 +4,15 @@ package model;
  * @author 郑欣然
  */
 public class MostPopularVo {
-    private String rowkey;
-    private String family;
-    private String column;
+    private String key;
     private String value;
 
-    public String getRowkey() {
-        return rowkey;
+    public String getKey() {
+        return key;
     }
 
-    public void setRowkey(String rowkey) {
-        this.rowkey = rowkey;
-    }
-
-    public String getFamily() {
-        return family;
-    }
-
-    public void setFamily(String family) {
-        this.family = family;
-    }
-
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getValue() {
@@ -44,9 +26,7 @@ public class MostPopularVo {
     @Override
     public String toString() {
         return "MostPopularVo{" +
-                "rowkey='" + rowkey + '\'' +
-                ", family='" + family + '\'' +
-                ", column='" + column + '\'' +
+                "key='" + key + '\'' +
                 ", value='" + value + '\'' +
                 '}';
     }

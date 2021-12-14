@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class HbaseUtils {
 
-    public static Configuration init(){
+    public static Configuration init() {
         Configuration con = new Configuration();
         con.set("hbase.zookeeper.quorum", "niit");
         System.setProperty("HADOOP_USER_NAME", "root");
@@ -96,43 +96,51 @@ public class HbaseUtils {
         }
     }
 
-    public static ResultScanner getAllRows(Connection conn,String tableName) throws IOException {
+    public static ResultScanner getAllRows(Connection conn, String tableName, String keyName, String valueName) throws IOException {
 
         Table table = conn.getTable(TableName.valueOf(tableName));
         Scan scan = new Scan();
+        scan.addColumn(Bytes.toBytes("Per_Info"), Bytes.toBytes(keyName));
+        scan.addColumn(Bytes.toBytes("Per_Info"), Bytes.toBytes(valueName));
         return table.getScanner(scan);
     }
 
-    public static List<MostPopularVo> getAllRows(Connection conn,String targetTable,HbaseUtils hbaseUtils) throws IOException {
+    public static List<MostPopularVo> getAllRows(Connection conn, String targetTable, String keyName, String valueName, HbaseUtils hbaseUtils) throws IOException {
         List<MostPopularVo> mostPopulars = new ArrayList<>();
-        ResultScanner results = getAllRows(conn,targetTable);
+        ResultScanner results = getAllRows(conn, targetTable, keyName, valueName);
         /** 返回rk下边的所有单元格*/
-        for(Result result : results){
-            Cell[] cells = result.rawCells();
-            for(Cell cell : cells){
-                MostPopularVo mostPopular = new MostPopularVo();
-                mostPopular.setRowkey(Bytes.toString(CellUtil.cloneRow(cell)));
-                mostPopular.setFamily(Bytes.toString(CellUtil.cloneFamily(cell)));
-                mostPopular.setColumn(Bytes.toString(CellUtil.cloneQualifier(cell)));
-                mostPopular.setValue(Bytes.toString(CellUtil.cloneValue(cell)));
-                mostPopulars.add(mostPopular);
-            }
+        for (Result result : results) {
+
+            MostPopularVo mostPopular = new MostPopularVo();
+            byte[] k = result.getValue(Bytes.toBytes("Per_Info"), Bytes.toBytes(keyName));
+            byte[] v = result.getValue(Bytes.toBytes("Per_Info"), Bytes.toBytes(valueName));
+            mostPopular.setKey(Bytes.toString(k));
+            mostPopular.setValue(Bytes.toString(v));
+            mostPopulars.add(mostPopular);
+
         }
         System.out.println(mostPopulars);
         return mostPopulars;
     }
 
-    public static void setJSON(Connection conn, String tableName, HttpServletRequest request, String name) throws IOException {
-        List<MostPopularVo>  mostPopularVos=
+    public static void setJSON(Connection conn, String tableName, HttpServletRequest request, String name, String keyName, String valueName) throws IOException {
+        List<MostPopularVo> mostPopularVos =
                 getAllRows(
                         conn,
                         tableName,
+                        keyName,
+                        valueName,
                         null);
         JSONObject targetJson = new JSONObject();
-        targetJson.put("rows", targetJson);
-        request.setAttribute(name,targetJson);
-    }
+        targetJson.put("rows", mostPopularVos);
+        request.getSession().setAttribute(name, targetJson);
 
+        /**
+         * page
+         * request
+         * session
+         * context*/
+    }
 
 
 }

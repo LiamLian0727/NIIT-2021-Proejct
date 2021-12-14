@@ -30,11 +30,16 @@ public class AverageVoteEcharts extends HttpServlet {
         Admin admin = conn.getAdmin();
         String status = "error";
 
+        String type = request.getParameter("type");
+        int min = Integer.parseInt(request.getParameter("min"));
+        int num = Integer.parseInt(request.getParameter("num"));
+
         Average.set(
                 ",",
                 new String[]{"Info"},
-                "actors",
-                3,10);
+                type,
+                min,
+                num);
 
         try {
             HbaseUtils.jobSubmission(
@@ -46,7 +51,7 @@ public class AverageVoteEcharts extends HttpServlet {
                     Text.class,
                     FloatWritable.class);
 
-            setJSON(conn, "OutAverageScore", request, "Ave");
+            setJSON(conn, "OutAverageScore", request, "Ave",type,"averageScore");
 
             status = "success";
         } catch (ClassNotFoundException e) {
@@ -54,7 +59,7 @@ public class AverageVoteEcharts extends HttpServlet {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }finally {
-            response.sendRedirect("http://localhost:8080/Group4Project/analyze/director?status="+status);
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/average.jsp?status="+status);
         }
     }
 

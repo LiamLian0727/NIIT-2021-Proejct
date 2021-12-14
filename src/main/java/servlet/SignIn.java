@@ -17,14 +17,14 @@ import java.sql.*;
 public class SignIn extends HttpServlet {
 
 
-    String urlIndex = "http://localhost:8080/Group4Project/index.html";
-    String utlMain = "http://localhost:8080/Group4Project/analyze/index.html";
+    static final String URL_INDEX = "http://localhost:8080/Group4Project/index.html";
+    static final String URL_MAIN = "http://localhost:8080/Group4Project/up.html";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String name = request.getParameter("Username");
         if ("".equals(name)) {
-            response.sendRedirect(urlIndex + "?error=UsernameNull");
+            response.sendRedirect(URL_INDEX + "?error=UsernameNull");
         } else {
 
             String password = request.getParameter("Password");
@@ -39,9 +39,9 @@ public class SignIn extends HttpServlet {
             }
             if (user != null) {
                 request.getSession().setAttribute("user", user);
-                response.sendRedirect(utlMain);
+                response.sendRedirect(URL_MAIN);
             } else {
-                response.sendRedirect(urlIndex + "?error=passwdError");
+                response.sendRedirect(URL_INDEX + "?error=passwdError");
 
             }
         }

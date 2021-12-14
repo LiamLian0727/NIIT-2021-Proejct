@@ -3,7 +3,6 @@ package MapReduce;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.hbase.mapreduce.TableReducer;
@@ -19,34 +18,44 @@ import static utils.HbaseUtils.*;
  * @author 连仕杰
  */
 public class Sum {
+
+    /**
+     * @param csvSplitBySet
+     * 使用分隔符
+     * @param columnFamilySet
+     * 列族名
+     * @param typeIncome
+     * 分析的收入类别 美国票房还是全球票房
+     * @param typeKey
+     * 分析的类别
+     * @param size
+     * 输出个数
+     * */
+
     static String csvSplitBy = null;
     static String[] columnFamily = null;
     static String typeIncome = null;
     static String typeKey = null;
-    static boolean earn = false;
     static int size = 10;
     static TreeMap<Long, String> tree;
-    //ture ：纯利润 false ： 票房
 
 
     static final String NULLVALUE = "N/A";
 
-    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeIncomeSet, String typeKeySet, boolean earnSet, int sizeSet) {
+    public static void set(String csvSplitBySet, String[] columnFamilySet, String typeIncomeSet, String typeKeySet,  int sizeSet) {
         csvSplitBy = csvSplitBySet;
         columnFamily = columnFamilySet;
         typeIncome = typeIncomeSet;
         typeKey = typeKeySet;
-        earn = earnSet;
         size = sizeSet;
 
     }
 
-    public static class Map extends TableMapper<Text, LongWritable> {
+    public static class Map extends TableMapper<Text, Text> {
 
-        static public LongWritable sumIn = new LongWritable(0);
+        static public Text sumIn = new Text("default");
         static private Text word = new Text("default");
         static String income, keyValue, budget;
-        static long voteLong;
 
         @Override
         protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
@@ -54,36 +63,26 @@ public class Sum {
                     Bytes.toBytes(typeKey)));
             income = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
                     Bytes.toBytes(typeIncome)));
-            if (earn) {
-                budget = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
-                        Bytes.toBytes("budget")));
-                if (!(NULLVALUE.equals(keyValue) || NULLVALUE.equals(income) || NULLVALUE.equals(budget))) {
-                    keyValue = keyValue.replaceAll("\"", "");
-                    voteLong = Long.parseLong(income.split(" ")[1]);
-                    voteLong -= Long.parseLong(budget.split(" ")[1]);
-                    sumIn.set(voteLong);
-                    for (String s : keyValue.split(csvSplitBy)) {
-                        word.set(s.trim());
-                        context.write(word, sumIn);
-                    }
-                }
-            } else {
-                if (!(NULLVALUE.equals(keyValue) || NULLVALUE.equals(income))) {
-                    keyValue = keyValue.replaceAll("\"", "");
-                    voteLong = Long.parseLong(income.split(" ")[1]);
-                    sumIn.set(voteLong);
-                    for (String s : keyValue.split(csvSplitBy)) {
-                        word.set(s.trim());
-                        context.write(word, sumIn);
-                    }
+
+            budget = new String(value.getValue(Bytes.toBytes(columnFamily[0]),
+                    Bytes.toBytes("budget")));
+
+            if (!(NULLVALUE.equals(keyValue) || NULLVALUE.equals(income) || NULLVALUE.equals(budget))) {
+                keyValue = keyValue.replaceAll("\"", "");
+
+                sumIn.set(income + ":" + budget);
+                for (String s : keyValue.split(csvSplitBy)) {
+                    word.set(s.trim());
+                    context.write(word, sumIn);
                 }
             }
+
 
         }
 
     }
 
-    public static class Reduce extends TableReducer<Text, LongWritable, ImmutableBytesWritable> {
+    public static class Reduce extends TableReducer<Text, Text, ImmutableBytesWritable> {
 
         String format;
 
@@ -93,12 +92,14 @@ public class Sum {
         }
 
         @Override
-        public void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
-            long sum = 0;
-            for (LongWritable value : values) {
-                sum += value.get();
+        public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+            long sumIn = 0,sumBu=0;
+            for (Text value : values) {
+                String[] split = value.toString().split(":");
+                sumIn += Long.parseLong(split[0].split(" ")[1]);
+                sumBu += Long.parseLong(split[1].split(" ")[1]);
             }
-            tree.put(sum, key.toString());
+            tree.put(sumIn, key.toString() + "@" +sumBu);
             if (tree.size() > size) {
                 tree.remove(tree.firstKey());
             }
@@ -120,13 +121,14 @@ public class Sum {
                 // 获取key
                 key = (Long) entry.getKey();
                 value = (String) entry.getValue();
+                String[] split = value.split("@");
                 Put put = new Put(Bytes.toBytes((max - count) + typeKey));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes(typeKey),
-                        Bytes.toBytes(value));
+                        Bytes.toBytes(split[0]));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes("sumIncome"),
-                        Bytes.toBytes(String.valueOf(key)));
+                        Bytes.toBytes(String.valueOf(key) +":"+split[1]));
 
                 context.write(null, put);
                 count++;
@@ -148,7 +150,6 @@ public class Sum {
                 new String[]{"Info"},
                 "worlwide_gross_income",
                 "original_title",
-                false,
                 10
         );
 
@@ -158,7 +159,7 @@ public class Sum {
                 Sum.Map.class,
                 Sum.Reduce.class,
                 Text.class,
-                LongWritable.class);
+                Text.class);
     }
 
     public static void main(String[] args) {

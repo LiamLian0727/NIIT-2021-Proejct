@@ -2,16 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-    <title>文件上传页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="袁蕾 连仕杰">
+    <title>UpLoad</title>
     <link rel="stylesheet" href="css/styleUp.css">
 </head>
-<body>
-<!-- 名片分三大块
-最外层的一块a
-平面圆柱一块c -->
+<body onload="error()">
 <div class="a">
+    <div class="b">
+        <a href="#">Uploaded</a>
+        <h2>speific and vivid</h2><br/>
+        <span>Your movie needs view,</br></br>Java is the best language in the world,</br><br/>Feel the magic of Big Data</br>
+            <br/>Keep going!!</span>
+    </div>
     <div class="c">
         <!-- --i是用来计算平面圆柱的动效延迟和距离的
         --w则是用来计算平面圆柱的宽度 -->
@@ -21,41 +24,52 @@
         <div class="d" style="--i:4;--w:1.7"></div>
         <div class="e" style="--i:1"></div>
     </div>
+    <!-- 设置二维码 -->
     <div class="f">
-<!--    <form  method="post" enctype="multipart/form-data">-->
-        <div class="content">
-            <input id="default-btn" type="file" hidden onchange=""/>
+        <form action="UpdateToHDFS" class="content" method="post" enctype="multipart/form-data">
+            <input name="toHDFS" id="default-btn" type="file" hidden onchange="change()"/>
             <div class="btn">
-                <button onclick="active()" id="custom-btn">Choose a file</button>
+                <button type="button" onclick="active()" id="custom-btn">Choose a file</button>
             </div>
-            <div class="file-name">No file chosen</div>
-            <input id="btn" type="submit" value="Submit" />
-        </div>
-<!--    </form>-->
+            <div id="fname" class="file-name">
+                No file chosen
+            </div>
+            <input id="btn" type="submit" value="Submit"/>
+        </form>
     </div>
-
 </div>
 
 <script>
-    const defaultBtn = document.querySelector("#default-btn");
-    const customBtn = document.querySelector("#custom-btn");
-    const fileName = document.querySelector(".file-name");
-    let regExp = /[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
+
+    function error() {
+        let query = window.location.search.substring(1);
+        let pair = query.split("=");
+        if (pair[1] === 'notUp') {
+            alert("Error, Please Up Date to HDFS");
+        }
+    }
+
+    const defaultBtn = document.getElementById("default-btn");
+    const customBtn = document.getElementById("custom-btn");
+    const fileName = document.getElementById("fname");
+
     function active() {
         defaultBtn.click();
     }
-    defaultBtn.addEventListener("change",function () {
-        if(this.value){
-            let nameValue = this.value.match(regExp);
+
+    function change() {
+        if (defaultBtn.value) {
+            let value = defaultBtn.value.toString().split("\\");
+            let nameValue = value[value.length - 1];
+            fileName.style.display = "inline"
             fileName.style.display = "block";
             fileName.textContent = nameValue;
-            // 选择文件后显示文件名
-        }else {
+        } else {
+            fileName.style.display = "inline"
             fileName.style.display = "block";
             fileName.textContent = "No file chosen";
         }
-    });
+    };
 </script>
-
 </body>
 </html>

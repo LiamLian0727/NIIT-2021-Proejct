@@ -1,184 +1,190 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap');
 
-:root{
+:root {
     /*自定义 用var()调用*/
     --blue: #6b74c4;
     --black: #213b82;
 }
 
-*{
+* {
     font-family: 'Nunito', sans-serif;
-    margin:0; padding:0;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    outline: none; border:none;
+    outline: none;
+    border: none;
     text-decoration: none;
     transition: all .2s linear;
 }
 
-*::selection{
-    background:var(--blue);
+*::selection {
+    background: var(--blue);
     color: #ffffff;
 }
 
-html{
+html {
     font-size: 62.5%;
     overflow-x: hidden;
     scroll-padding-top: 6.5rem;
     scroll-behavior: smooth;
 }
 
-section{
-    padding:2rem 9%;
+section {
+    padding: 2rem 9%;
 }
 
-.btn{
+.btn {
     display: inline-block;
     margin-top: 1rem;
-    background:var(--blue);
-    color:#fff;
-    padding:.8rem 3rem;
+    background: var(--blue);
+    color: #fff;
+    padding: .8rem 3rem;
     font-size: 1.7rem;
     text-align: center;
     cursor: pointer;
 }
 
-.btn:hover{
-    background:var(--black);
+.btn:hover {
+    background: var(--black);
 }
 
-.heading{
+.heading {
     text-align: center;
-    color:var(--black);
-    padding:1rem;
+    color: var(--black);
+    padding: 1rem;
     font-size: 3.5rem;
     padding-bottom: 2rem;
 }
 
-.heading span{
-    color:var(--blue);
+.heading span {
+    color: var(--blue);
 }
 
-.header-2{
-    background:#fff;
+.header-2 {
+    background: #fff;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding:2rem 9%;
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
+    padding: 2rem 9%;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
     position: relative;
 }
 
-.header-2.active{
+.header-2.active {
     position: fixed;
-    top:0; left: 0; right:0;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 10000;
 }
 
-.header-2 .navbar a{
-    padding:.5rem 1.5rem;
+.header-2 .navbar a {
+    padding: .5rem 1.5rem;
     font-size: 2rem;
     border-radius: .5rem;
-    color:var(--black);
+    color: var(--black);
 }
 
-.header-2 .navbar a:hover{
-    background:var(--blue);
-    color:#fff;
+.header-2 .navbar a:hover {
+    background: var(--blue);
+    color: #fff;
 }
 
-.header-2 .icons a{
+.header-2 .icons a {
     font-size: 2.5rem;
-    color:var(--black);
+    color: var(--black);
     padding-left: 1rem;
 }
 
-.header-2 .icons a:hover{
-    color:var(--blue);
+.header-2 .icons a:hover {
+    color: var(--blue);
 }
 
-#menu-bar{
+#menu-bar {
     font-size: 3rem;
     border-radius: .5rem;
-    border:.1rem solid var(--black);
-    padding:.8rem 1.5rem;
-    color:var(--black);
+    border: .1rem solid var(--black);
+    padding: .8rem 1.5rem;
+    color: var(--black);
     cursor: pointer;
     display: none;
 }
 
-.home{
+.home {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-.home .image{
-    flex:1 1 15rem;
+.home .image {
+    flex: 1 1 15rem;
     padding-top: 2rem;
 }
 
-.home .image img{
-    width:48rem;
-    height:55rem;
+.home .image img {
+    width: 48rem;
+    height: 55rem;
 }
 
-.home .content{
-    flex:1 1 40rem;
+.home .content {
+    flex: 1 1 40rem;
 }
 
-.home .content span{
+.home .content span {
     font-size: 5rem;
-    color:#666;
+    color: #666;
 }
 
-.home .content h3{
+.home .content h3 {
     font-size: 7rem;
-    color:var(--black);
+    color: var(--black);
 }
 
-.banner-container{
+.banner-container {
     display: flex;
     /*让弹性盒在必要的时候拆行*/
     flex-wrap: wrap;
-    gap:1.5rem;
+    gap: 1.5rem;
 }
 
-.banner-container .banner{
-    flex:1 1 50rem;
+.banner-container .banner {
+    flex: 1 1 50rem;
     height: 28rem;
     overflow: hidden;
     position: relative;
 }
 
-.banner-container .banner img{
+.banner-container .banner img {
     height: 100%;
-    width:100%;
+    width: 100%;
     /*对图片进行剪切 保留原始比例*/
     object-fit: cover;
 }
 
-.banner-container .banner .content{
+.banner-container .banner .content {
     position: absolute;
-    top:50%; left: 4%;
+    top: 50%;
+    left: 4%;
     transform: translateY(-50%);
 }
 
-.banner-container .banner .content h3{
+.banner-container .banner .content h3 {
     font-size: 4rem;
-    color:var(--black);
+    color: var(--black);
 }
 
-.banner-container .banner .content p{
+.banner-container .banner .content p {
     font-size: 3rem;
     color: #333333;
 }
+
 /*鼠标移入图片滑动效果*/
-.banner-container .banner:hover img{
-    transform:scale(1.2) rotate(-5deg);
+.banner-container .banner:hover img {
+    transform: scale(1.2) rotate(-5deg);
 }
 
-.inputs{
+.inputs {
     width: 100%;
     padding: 12px 20px;
     margin-top: 15px;
@@ -204,7 +210,7 @@ input[type=submit]:hover {
     background-color: #213b82;
 }
 
-option{
+option {
     font-family: "Open Sans", sans-serif;
     text-transform: uppercase;
     color: #6b74c4;
@@ -227,86 +233,132 @@ option{
     letter-spacing: 8px;
 }
 
-.divs{
-    display:flex;
-    align-items:center;
-    justify-content:center;
+.divs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 100%;
 }
 
 
 /* media queries  */
 /*自适应布局*/
-@media(max-width:1200px){
+@media (max-width: 1200px) {
 
-    html{
+    html {
         font-size: 55%;
     }
 
 }
 
-@media(max-width:991px){
+@media (max-width: 991px) {
 
     .header-1,
-    .header-2{
-        padding:2rem;
+    .header-2 {
+        padding: 2rem;
     }
 
-    section{
-        padding:2rem;
+    section {
+        padding: 2rem;
     }
 
 }
 
-@media(max-width:768px){
+@media (max-width: 768px) {
 
-    #menu-bar{
+    #menu-bar {
         display: initial;
     }
 
-    .header-2 .navbar{
+    .header-2 .navbar {
         position: absolute;
-        top:100%; left: 0; right:0;
-        background:var(--black);
-        padding:1rem 2rem;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--black);
+        padding: 1rem 2rem;
         display: none;
     }
 
-    .header-2 .navbar.active{
+    .header-2 .navbar.active {
         display: initial;
     }
 
-    .header-2 .navbar a{
+    .header-2 .navbar a {
         font-size: 2.5rem;
         display: block;
         text-align: center;
-        background:#fff;
-        padding:1rem;
-        margin:1.5rem 0;
+        background: #fff;
+        padding: 1rem;
+        margin: 1.5rem 0;
     }
 
-    .home .content{
+    .home .content {
         text-align: center;
     }
 
-    .home .content h3{
+    .home .content h3 {
         font-size: 4rem;
     }
 
 }
 
-@media(max-width:450px){
+@media (max-width: 450px) {
 
-    html{
+    html {
         font-size: 50%;
     }
 
-    .heading{
+    .heading {
         font-size: 3rem;
     }
 
-    .header-1{
+    .header-1 {
         flex-flow: column;
     }
 
+
 }
+
+.dropbtn {
+    background-color: #ffffff;;
+    color: var(--black);;
+    border: none;
+    cursor: pointer;
+    padding: .5rem 1.5rem;
+    font-size: 2rem;
+    border-radius: .5rem;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content a {
+    font-size: 1.5rem;
+    text-decoration: none;
+    border-radius: .5rem;
+    display: block;
+    padding: .5rem 1.5rem;
+    color: var(--black);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: var(--blue);
+    color: #fff;
+}
+
+

@@ -1,5 +1,6 @@
 package utils;
 
+import java.net.URL;
 import java.sql.*;
 
 /**
@@ -7,12 +8,27 @@ import java.sql.*;
  */
 public class MySqlUtils {
 
+    /**
+     * @param JDBC
+     * 使用JDBC Class Name反射
+     * @param URL
+     * MySQL url 保护数据库名 时区 字符集 是否使用SSL
+     * @param USER
+     * user name
+     * @param PASSWORD
+     * 数据库密码
+     * */
+    private static final String JDBC = "com.mysql.jdbc.Driver";
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/niit?serverTimezone=Asia/Shanghai&characterEncoding=utf-8&useSSL=false";
+    private static final String USER = "root";
+    private static final String PASSWORD = "niit1234";
+
     public static Connection createConnection() throws SQLException, ClassNotFoundException {
+
         Connection con;
-        Class.forName("com.mysql.jdbc.Driver");
-        con= DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/niit?serverTimezone=Asia/Shanghai&characterEncoding=utf-8&useSSL=false",
-                "root","niit1234");
+        Class.forName(JDBC);
+        con= DriverManager.getConnection(URL, USER,PASSWORD);
         return con;
     }
 

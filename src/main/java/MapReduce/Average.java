@@ -21,12 +21,26 @@ import static utils.HbaseUtils.*;
  */
 
 public class Average {
+
+    /**
+     * @param csvSplitBySet
+     * 使用分隔符
+     * @param columnFamilySet
+     * 列族名
+     * @param typeKey
+     * 分析类别
+     * @param countMin
+     * 输出结果的最小作品数量
+     * @param size
+     * 输出个数
+     * */
+
     static String csvSplitBy = null;
     static String[] columnFamily = null;
     static String typeKey = null;
     static int countMin = 0;
     static int size = 100;
-    static TreeMap<Float, String> tree;
+    static TreeMap<Float, String[]> tree;
 
 
     static final String NULLVALUE = "N/A";
@@ -78,14 +92,15 @@ public class Average {
 
         @Override
         public void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
-            float sum = 0, count = 0;
+            float sum = 0;
+            int count = 0;
             for (FloatWritable value : values) {
                 sum += value.get();
                 count++;
             }
             float averageScore = sum / count;
             if (count >= countMin) {
-                tree.put(averageScore, String.valueOf(key));
+                tree.put(averageScore, new String[]{key.toString(), String.valueOf(count)});
                 if (tree.size() > size) {
                     tree.remove(tree.firstKey());
                 }
@@ -94,7 +109,7 @@ public class Average {
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
-            String value = null;
+            String[] value = null;
 
             float averageScore;
 
@@ -105,16 +120,17 @@ public class Average {
                 java.util.Map.Entry entry = (java.util.Map.Entry) iter.next();
                 // 获取key
                 averageScore = (Float) entry.getKey();
-                value = (String)entry.getValue();
+                value = (String[])entry.getValue();
                 format = String.format("%.3f", 10f - averageScore);
 
-                Put put = new Put(Bytes.toBytes(format + value + typeKey));
+                Put put = new Put(Bytes.toBytes(format + value[0] + typeKey));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes(typeKey),
-                        Bytes.toBytes(value));
+                        Bytes.toBytes(value[0]));
                 put.addColumn(Bytes.toBytes("Per_Info"),
                         Bytes.toBytes("averageScore"),
-                        Bytes.toBytes(String.format("%.3f", averageScore)));
+                        Bytes.toBytes(String.format("%.3f", averageScore)
+                                         + ":" + value[1]));
                 context.write(null, put);
             }
 

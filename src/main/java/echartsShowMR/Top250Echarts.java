@@ -32,6 +32,9 @@ Top250Echarts extends HttpServlet {
         float C = 5.9f;
         String status = "error";
 
+        int min = Integer.parseInt(request.getParameter("min"));
+        int num = Integer.parseInt(request.getParameter("num"));
+
         try {
             C = getC(
                     conn,
@@ -45,8 +48,8 @@ Top250Echarts extends HttpServlet {
                     ",",
                     new String[]{"Info"},
                     C,
-                    5000,
-                    10
+                    min,
+                    num
             );
 
 
@@ -60,7 +63,7 @@ Top250Echarts extends HttpServlet {
                     FloatWritable.class
             );
 
-            setJSON(conn, "topNTarget", request, "topN");
+            setJSON(conn, "TopN", request, "topN","original_title","avg_vote");
 
             status="success";
 
@@ -69,7 +72,7 @@ Top250Echarts extends HttpServlet {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            response.sendRedirect("http://localhost:8080/Group4Project/analyze/top.html?status="+status);
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/top.jsp?status="+status);
         }
     }
 

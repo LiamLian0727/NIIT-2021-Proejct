@@ -1,6 +1,6 @@
 package servlet.impl;
 
-import DAO.UserDao;
+import dao.UserDao;
 import model.User;
 import servlet.IUserService;
 

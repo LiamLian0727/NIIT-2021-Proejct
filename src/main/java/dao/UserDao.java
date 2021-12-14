@@ -1,4 +1,4 @@
-package DAO;
+package dao;
 
 import model.User;
 
@@ -9,7 +9,7 @@ import static utils.MySqlUtils.*;
 /**
  * @author 连仕杰
  *
- * 实现对用户的增改查
+ * 实现对用户的增(saveUser)、改(login)、查(userIsExist)
  */
 public class UserDao{
 

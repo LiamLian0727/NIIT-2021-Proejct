@@ -785,7 +785,7 @@ SELECT|sys.sys_config:null
       <Position>3</Position>
       <DataType>varchar(255)|0s</DataType>
     </column>
-    <column id="244" parent="238" name="Grender">
+    <column id="244" parent="238" name="gender">
       <Position>4</Position>
       <DataType>varchar(255)|0s</DataType>
     </column>

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = "/SignUp")
 public class SignUp extends HttpServlet {
 
-    String url = "http://localhost:8080/Group4Project/index.html";
+    static final String URL = "http://localhost:8080/Group4Project/index.html";
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
@@ -32,13 +32,13 @@ public class SignUp extends HttpServlet {
                 user.setPassword(request.getParameter("PasswordSU"));
                 user.setEmail(request.getParameter("EmailSU"));
                 userService.saveUser(user);
-                response.sendRedirect(url + "?error=noError");
+                response.sendRedirect( URL + "?status=success");
             } else if (!equals) {
-                response.sendRedirect(url + "?error=notEqual");
+                response.sendRedirect( URL + "?error=notEqual");
             } else if (exit) {
-                response.sendRedirect(url + "?error=hasExit");
+                response.sendRedirect( URL + "?error=hasExit");
             } else {
-                response.sendRedirect(url + "?error=UsernameNull");
+                response.sendRedirect( URL + "?error=UsernameNull");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,4 +49,5 @@ public class SignUp extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         doPost(request, response);
     }
+
 }

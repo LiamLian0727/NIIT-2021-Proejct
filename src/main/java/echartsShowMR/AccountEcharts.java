@@ -40,7 +40,7 @@ public class AccountEcharts extends HttpServlet {
                 new String[]{"Info"},
                 type,
                 min,
-                10
+                num
         );
 
         try {
@@ -54,15 +54,18 @@ public class AccountEcharts extends HttpServlet {
                     IntWritable.class
             );
 
-            setJSON(conn, "OutAccount", request, "Acc");
+            setJSON(conn, "OutAccount", request, "Acc",type,"percentage");
 
             stauts = "success";
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }finally {
-            response.sendRedirect("http://localhost:8080/Group4Project/analyze/account.html?status="+stauts);
+            response.sendRedirect("http://localhost:8080/Group4Project/analyze/account.jsp?status=" + stauts);
+
+
         }
     }
 

@@ -20,14 +20,26 @@ import static utils.HbaseUtils.*;
  * @author 殷明，刘宣兑
  */
 public class Account {
+
+    /**
+     * @param csvSplitBySet
+     * 使用分隔符
+     * @param columnFamilySet
+     * 列族名
+     * @param typeKeySet
+     * 分析类别
+     * @param percentageMinSet
+     * 输出结果的最小占比
+     * @param size
+     * 输出个数(默认加1 因为有other = 1 - sum（size1，size2 ……）)
+     * */
+
     static String csvSplitBy = null;
     static String[] columnFamily = null;
     static String typeKey = null;
     static float percentageMin = 0f;
     static TreeMap<Float,String> tree;
     static int size = 10;
-
-
     static final String NULLVALUE = "N/A";
 
     public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, float percentageMinSet, int sizeSet) {

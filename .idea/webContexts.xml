@@ -3,14 +3,21 @@
   <component name="WebContextManager">
     <option name="state">
       <map>
+        <entry key="file://$PROJECT_DIR$/web/DEMO.html" value="file://$PROJECT_DIR$/web" />
         <entry key="file://$PROJECT_DIR$/web/SignIn.html" value="file://$PROJECT_DIR$/web" />
         <entry key="file://$PROJECT_DIR$/web/SignIn.jsp" value="file://$PROJECT_DIR$/web" />
         <entry key="file://$PROJECT_DIR$/web/SignInAndUp/index.html" value="file://$PROJECT_DIR$/web/SignInAndUp" />
+        <entry key="file://$PROJECT_DIR$/web/a.jsp" value="file://$PROJECT_DIR$/web" />
         <entry key="file://$PROJECT_DIR$/web/analyze/a.html" value="file://$PROJECT_DIR$/web/analyze" />
         <entry key="file://$PROJECT_DIR$/web/analyze/account.html" value="file://$PROJECT_DIR$/web/analyze" />
+        <entry key="file://$PROJECT_DIR$/web/analyze/average.jsp" value="file://$PROJECT_DIR$/web/analyze" />
         <entry key="file://$PROJECT_DIR$/web/analyze/box-office.html" value="file://$PROJECT_DIR$/web/analyze" />
+        <entry key="file://$PROJECT_DIR$/web/analyze/index.html" value="file://$PROJECT_DIR$/web/analyze" />
+        <entry key="file://$PROJECT_DIR$/web/analyze/navigationBar.jsp" value="file://$PROJECT_DIR$/web/analyze" />
+        <entry key="file://$PROJECT_DIR$/web/css" value="file://$PROJECT_DIR$/web" />
         <entry key="file://$PROJECT_DIR$/web/index.html" value="file://$PROJECT_DIR$/web" />
         <entry key="file://$PROJECT_DIR$/web/table.jsp" value="file://$PROJECT_DIR$/web" />
+        <entry key="file://$PROJECT_DIR$/web/up.html" value="file://$PROJECT_DIR$/web" />
       </map>
     </option>
   </component>

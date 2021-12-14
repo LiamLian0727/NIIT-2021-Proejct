@@ -17,12 +17,17 @@ import static utils.HbaseUtils.init;
 
 /**
  * @author 连仕杰
- * 用来计算所有电影平均分 C
  */
 public class AverageC {
+
+    /**
+     * @param C
+     * 用来计算所有电影平均分
+     */
+
     static String csvSplitBy = ",";
     static String[] columnFamily = new String[]{"Info"};
-
+    static private float C = 5.9f;
     static final String NULLVALUE = "N/A";
 
     public static class Map extends TableMapper<Text, FloatWritable> {
@@ -66,10 +71,9 @@ public class AverageC {
         }
     }
 
-
     public static float getC(Connection conn, Admin admin, String inputTableName, String outputTableName) throws IOException, InterruptedException, ClassNotFoundException {
 
-        float C = 5.9f;
+
         HbaseUtils.jobSubmission(
                 admin,
                 inputTableName,
@@ -99,12 +103,12 @@ public class AverageC {
         Admin admin = null;
         try {
             connection = getConnection(init());
-             admin = connection.getAdmin();
+            admin = connection.getAdmin();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            getC(connection,admin,"IMDb","C");
+            getC(connection, admin, "IMDb", "C");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
