@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import static config.Config.NULLVALUE;
 import static utils.HbaseUtils.*;
 
 /**
@@ -39,8 +40,6 @@ public class Sum {
     static int size = 10;
     static TreeMap<Long, String> tree;
 
-
-    static final String NULLVALUE = "N/A";
 
     public static void set(String csvSplitBySet, String[] columnFamilySet, String typeIncomeSet, String typeKeySet,  int sizeSet) {
         csvSplitBy = csvSplitBySet;

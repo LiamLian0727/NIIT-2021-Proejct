@@ -12,6 +12,7 @@ import utils.HbaseUtils;
 
 import java.io.IOException;
 
+import static config.Config.NULLVALUE;
 import static utils.HbaseUtils.getConnection;
 import static utils.HbaseUtils.init;
 
@@ -28,7 +29,6 @@ public class AverageC {
     static String csvSplitBy = ",";
     static String[] columnFamily = new String[]{"Info"};
     static private float C = 5.9f;
-    static final String NULLVALUE = "N/A";
 
     public static class Map extends TableMapper<Text, FloatWritable> {
 

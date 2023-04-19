@@ -6,9 +6,12 @@ import model.User;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+
+import static config.Config.WEB_URL_BEGIN;
 
 /**
  * 登录拦截器
@@ -19,8 +22,8 @@ import java.util.List;
 
 public class SecurityFilter implements Filter {
 
-    String URL_INDEX = "http://localhost:8080/Group4Project/index.html";
-    String URL_UP = "http://localhost:8080/Group4Project/up.html";
+    String URL_INDEX = WEB_URL_BEGIN + "index.html";
+    String URL_UP = WEB_URL_BEGIN + "up.html";
     ServletContext servletContext;
 
     @Override
@@ -36,20 +39,28 @@ public class SecurityFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String currentURL = request.getRequestURI();
 
+        /**
+         *  放行接口
+         *
+         */
         System.out.println(currentURL);
         List<String> uriList = SecurityConfig.getUriList();
-        /* 放行接口 */
         for (String uri : uriList) {
             if (uri.equals(currentURL)) {
                 chain.doFilter(request, response);
                 return;
             }
         }
-        /* 未放行接口，需要检查是否登录才可访问页面 */
-        User user = (User) request.getSession().getAttribute("user");
-        PrintWriter pw = response.getWriter();
+
+        /**
+         *  未放行接口，
+         *  需要检查是否登录才可访问页面
+         *  检验对象： USER and UpToHDFS
+         */
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         if (user != null) {
-            if ("success".equals(servletContext.getAttribute("up"))) {
+            if ("success".equals(session.getAttribute("up"))) {
                 chain.doFilter(request, response);
             } else {
                 response.sendRedirect(URL_UP + "?error=notUp");

@@ -29,7 +29,6 @@
     function checkLogin(arg) {
         let sign = document.getElementById(arg)
         let elem = sign.getElementsByTagName("input");
-        // 用户名必须输入
         for (let i = 0; i < elem.length; i++) {
             if (elem [i].value === "") {
                 alert("必须输入" + elem [i].placeholder);

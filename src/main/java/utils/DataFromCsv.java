@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static config.Config.*;
 import static utils.HbaseUtils.*;
 
 /**
@@ -46,8 +47,6 @@ public class DataFromCsv {
     private static Configuration con;
     private static String[] columnFamily = new String[]{"Info"};
     private static String csvSplitBy = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    private static final String NULLVALUE = "N/A";
-    private static final String TMP = "src/main/java/utils/tmp/";
 
     public static void begin() throws IOException {
         con = init();

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import static config.Config.NULLVALUE;
 import static utils.HbaseUtils.*;
 
 /**
@@ -40,7 +41,6 @@ public class Account {
     static float percentageMin = 0f;
     static TreeMap<Float,String> tree;
     static int size = 10;
-    static final String NULLVALUE = "N/A";
 
     public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, float percentageMinSet, int sizeSet) {
         csvSplitBy = csvSplitBySet;

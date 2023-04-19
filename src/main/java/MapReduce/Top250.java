@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 
 import static MapReduce.AverageC.getC;
+import static config.Config.NULLVALUE;
 import static utils.HbaseUtils.getConnection;
 import static utils.HbaseUtils.init;
 
@@ -55,7 +56,6 @@ public class Top250 {
     static float weightedRank;
     static TreeMap<Float,Text> tree;
 
-    static final String NULLVALUE = "N/A";
     static final String[] typeKey = {"original_title", "avg_vote", "votes"};
 
     public static void set(String csvSplitBySet, String[] columnFamilySet, float meanVote, int maxMinSet, int sizeSet) {

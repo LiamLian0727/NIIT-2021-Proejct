@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static config.Config.WEB_URL_BEGIN;
+
 
 /**
  * @author 连仕杰
@@ -15,13 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = "/SignUp")
 public class SignUp extends HttpServlet {
 
-    static final String URL = "http://localhost:8080/Group4Project/index.html";
+    static final String URL = WEB_URL_BEGIN + "index.html";
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
         try {
             IUserService userService = new UserServiceImpl();
-            User user = null;
+            User user = new User();
             String name = request.getParameter("UsernameSU");
             boolean equals = request.getParameter("PasswordSU").equals(request.getParameter("ConfirmPassword"));
             boolean exit = userService.userIsExist(name);

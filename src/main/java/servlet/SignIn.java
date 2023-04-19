@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
 
+import static config.Config.WEB_URL_BEGIN;
+
 /**
  * @author 连仕杰
  */
@@ -17,8 +19,8 @@ import java.sql.*;
 public class SignIn extends HttpServlet {
 
 
-    static final String URL_INDEX = "http://localhost:8080/Group4Project/index.html";
-    static final String URL_MAIN = "http://localhost:8080/Group4Project/up.html";
+    static final String URL_INDEX = WEB_URL_BEGIN + "index.html";
+    static final String URL_MAIN = WEB_URL_BEGIN + "up.html";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

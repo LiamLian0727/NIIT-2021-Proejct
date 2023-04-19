@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static config.Config.WEB_URL_BEGIN;
+
 /**
  * @author 刘宣兑
  */
 @WebServlet(urlPatterns = "/Exit")
 public class Exit extends HttpServlet {
-   static final String URL = "http://localhost:8080/Group4Project/index.html";
+   static final String URL = WEB_URL_BEGIN + "index.html";
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(request.getSession().getAttribute("user") != null){

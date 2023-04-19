@@ -12,11 +12,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import static config.Config.*;
 import static utils.DataFromCsv.dataFromCsvToHbase;
 
 
@@ -39,26 +41,19 @@ public class UpdateToHDFS extends HttpServlet {
      * @param URL
      * 上传成功后跳转的对象
      */
-    private static final int MEMORY_THRESHOLD = 1024 * 1024 * 3;
-    private static final int MAX_FILE_SIZE = 1024 * 1024 * 50;
-    private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 60;
-    private static final String URL = "http://localhost:8080/Group4Project/analyze/index.jsp";
-    private static final String KV[] = {"up","success"};
-    ServletContext ctxContext;
+
+    private static final String URL = WEB_URL_BEGIN + "analyze/index.jsp";
+    private static final String KV[] = {"up", "success"};
 
     /**
      * 上传数据及保存文件
      */
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ctxContext = config.getServletContext();
-    }
 
     @Override
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
-
-        if (!(KV[1].equals(ctxContext.getAttribute(KV[0])))) {
+        HttpSession session = request.getSession();
+        if (! ( KV[1].equals( session.getAttribute( KV[0] ) ) ) ) {
             // 检测是否为多媒体上传
             if (!ServletFileUpload.isMultipartContent(request)) {
                 // 如果不是则停止
@@ -90,13 +85,14 @@ public class UpdateToHDFS extends HttpServlet {
                         }
                     }
                 }
-                ctxContext.setAttribute(KV[0], KV[1]);
+                session.setAttribute(KV[0], KV[1]);
             } catch (Exception ex) {
                 request.setAttribute("message",
                         "错误信息: " + ex.getMessage());
             }
         }
         response.sendRedirect(URL);
+
 
     }
 

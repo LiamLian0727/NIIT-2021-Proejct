@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import static config.Config.NULLVALUE;
 import static utils.HbaseUtils.*;
 
 /**
@@ -41,9 +42,6 @@ public class Average {
     static int countMin = 0;
     static int size = 100;
     static TreeMap<Float, String[]> tree;
-
-
-    static final String NULLVALUE = "N/A";
 
     public static void set(String csvSplitBySet, String[] columnFamilySet, String typeKeySet, int countMinSet, int sizeSet) {
         csvSplitBy = csvSplitBySet;

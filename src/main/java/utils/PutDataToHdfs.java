@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static config.Config.*;
+
 /**
  * @author 连仕杰
  */
@@ -18,9 +20,9 @@ public class PutDataToHdfs {
     static {
         try {
             fs = FileSystem.get(
-                    new URI("hdfs://niit:9000"),
+                    new URI(URI_LINE),
                     new Configuration(),
-                    "root");
+                    USER);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

@@ -96,7 +96,7 @@
                 }
             },
             legend: {
-                data: ['Evaporation', 'Temperature']
+                data: ['vate', 'number']
             },
             xAxis: [
                 {
@@ -145,12 +145,12 @@
             ],
             series: [
                 {
-                    name: 'Evaporation',
+                    name: 'vate',
                     type: 'bar',
                     data: data1
                 },
                 {
-                    name: 'Temperature',
+                    name: 'number',
                     type: 'line',
                     yAxisIndex: 1,
                     data: data2

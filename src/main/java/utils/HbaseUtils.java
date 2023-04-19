@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static config.Config.*;
+
 /**
  * @author 连仕杰
  */
@@ -27,8 +29,8 @@ public class HbaseUtils {
 
     public static Configuration init() {
         Configuration con = new Configuration();
-        con.set("hbase.zookeeper.quorum", "niit");
-        System.setProperty("HADOOP_USER_NAME", "root");
+        con.set("hbase.zookeeper.quorum", ZOOKEEPER_QUOEUM);
+        System.setProperty("HADOOP_USER_NAME", USER);
         return con;
     }
 
